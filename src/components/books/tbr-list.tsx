@@ -3,7 +3,7 @@
 import { DndContext, KeyboardSensor, PointerSensor, TouchSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ArrowUpToLine, BookCheck, ChevronDown, GripVertical, Play, Plus, Trash2 } from "lucide-react";
+import { ArrowUpToLine, BookCheck, ChevronDown, GalleryHorizontal, GripVertical, ListOrdered, Play, Plus, Trash2 } from "lucide-react";
 import { useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { addToShelf, moveTbr, removeFromShelf, setFormats, setStatus } from "@/app/actions";
@@ -97,33 +97,30 @@ export function TbrList({ initial }: { initial: UserBook[] }) {
 
   return (
     <>
-      <div className="mb-3 flex rounded-full bg-paper-2 p-1" role="tablist">
-        {(["shelf", "arrange"] as View[]).map((v) => (
-          <button
-            key={v}
-            role="tab"
-            aria-selected={view === v}
-            onClick={() => setView(v)}
-            className={cn("h-8 flex-1 rounded-full text-[13px] capitalize transition", view === v ? "bg-card text-ink shadow-sm" : "text-muted")}
-          >
-            {v === "shelf" ? "Covers" : "Arrange"}
-          </button>
-        ))}
-      </div>
-
-      <div className="-mx-4 mb-4 flex gap-2 overflow-x-auto px-4 pb-1">
-        {(["all", ...FORMATS.map((f) => f.id)] as Filter[]).map((f) => (
-          <button
-            key={f}
-            onClick={() => {
-              setFilter(f);
-              setIndex(0);
-            }}
-            className={cn("h-8 shrink-0 rounded-full border px-3.5 text-[13px] capitalize transition", filter === f ? "border-ink bg-ink text-paper" : "border-line-strong text-ink-soft")}
-          >
-            {f === "all" ? `All · ${books.length}` : `${f} · ${books.filter((b) => b.formats.includes(f)).length}`}
-          </button>
-        ))}
+      <div className="-mx-4 mb-1 flex items-center gap-2 px-4">
+        <div className="flex min-w-0 flex-1 gap-2 overflow-x-auto pb-1">
+          {(["all", ...FORMATS.map((f) => f.id)] as Filter[]).map((f) => (
+            <button
+              key={f}
+              onClick={() => {
+                setFilter(f);
+                setIndex(0);
+              }}
+              className={cn("h-8 shrink-0 rounded-full border px-3.5 text-[13px] capitalize transition", filter === f ? "border-ink bg-ink text-paper" : "border-line-strong text-ink-soft")}
+            >
+              {f === "all" ? `All · ${books.length}` : `${f} · ${books.filter((b) => b.formats.includes(f)).length}`}
+            </button>
+          ))}
+        </div>
+        <Button
+          size="icon-sm"
+          variant="outline"
+          className="mb-1"
+          onClick={() => setView(view === "shelf" ? "arrange" : "shelf")}
+          aria-label={view === "shelf" ? "Arrange as a list" : "Show covers"}
+        >
+          {view === "shelf" ? <ListOrdered /> : <GalleryHorizontal />}
+        </Button>
       </div>
 
       {view === "shelf" && current && (
@@ -132,14 +129,15 @@ export function TbrList({ initial }: { initial: UserBook[] }) {
             items={visible}
             index={index}
             onIndexChange={setIndex}
+            size={244}
             badge={(_, i) => (
               // Red bookmark ribbon with the book's place in line
-              <span className="absolute -top-1.5 right-[18%] flex h-10 w-6 items-start justify-center bg-stamp pt-1.5 font-type text-[11px] font-bold text-white shadow-md [clip-path:polygon(0_0,100%_0,100%_100%,50%_78%,0_100%)]">
+              <span className="absolute -top-1.5 right-[16%] flex h-14 w-8 items-start justify-center bg-stamp pt-2 font-type text-[13px] font-bold text-white shadow-md [clip-path:polygon(0_0,100%_0,100%_100%,50%_78%,0_100%)]">
                 {i + 1}
               </span>
             )}
           />
-          <TbrDetail key={current.id} item={current} first={books[0]?.id === current.id} {...handlers(current)} />
+          <TbrDetail key={current.id} item={current} rank={index + 1} total={visible.length} first={books[0]?.id === current.id} onAdd={() => setSearching(true)} {...handlers(current)} />
         </section>
       )}
 
@@ -164,9 +162,11 @@ export function TbrList({ initial }: { initial: UserBook[] }) {
 
       {visible.length === 0 && <p className="paper ruled px-5 py-8 text-center font-serif text-lg text-ink-soft">Nothing here yet. Add the next book you can&apos;t wait to read.</p>}
 
-      <Button variant="primary" size="lg" className="fixed bottom-24 right-4 z-30 shadow-lg" onClick={() => setSearching(true)}>
-        <Plus /> Add book
-      </Button>
+      {(view === "arrange" || !current) && (
+        <Button variant="primary" size="lg" className="fixed bottom-24 right-4 z-30 shadow-lg" onClick={() => setSearching(true)}>
+          <Plus /> Add book
+        </Button>
+      )}
 
       <BookSearch
         open={searching}
@@ -270,45 +270,74 @@ function TbrRow({
 
 function TbrDetail({
   item,
+  rank,
+  total,
   first,
   onFormats,
   onStart,
   onFinish,
   onRemove,
   onReadNext,
+  onAdd,
 }: {
   item: UserBook;
+  rank: number;
+  total: number;
   first: boolean;
   onFormats: (f: Format[]) => void;
   onStart: () => void;
   onFinish: () => void;
   onRemove: () => void;
   onReadNext: () => void;
+  onAdd: () => void;
 }) {
   return (
-    <div className="animate-rise pb-16 text-center">
-      <p className="line-clamp-2 font-serif text-[20px] leading-snug">{item.book.title}</p>
-      <p className="line-clamp-1 text-[13px] text-muted">{item.book.authors.join(", ")}</p>
-      <div className="paper mt-4 space-y-3 p-4 text-left">
-        <p className="label">I have it on</p>
+    <div className="animate-rise text-center">
+      <p className="line-clamp-2 font-serif text-[28px] leading-tight">{item.book.title}</p>
+      <p className="mt-1 line-clamp-1 text-[14px] text-muted">
+        {item.book.authors.join(", ")} · <span className="font-type text-[12px]">{rank} of {total}</span>
+      </p>
+
+      {/* Round actions, like a toolbar under the book */}
+      <div className="mt-5 flex items-start justify-center gap-4">
+        <RoundAction label="Start" onClick={onStart}>
+          <Play />
+        </RoundAction>
+        <RoundAction label="Finished" onClick={onFinish} stamp>
+          <BookCheck />
+        </RoundAction>
+        {!first && (
+          <RoundAction label="Read next" onClick={onReadNext}>
+            <ArrowUpToLine />
+          </RoundAction>
+        )}
+        <RoundAction label="Remove" onClick={onRemove}>
+          <Trash2 />
+        </RoundAction>
+        <RoundAction label="Add" onClick={onAdd}>
+          <Plus />
+        </RoundAction>
+      </div>
+
+      <div className="mt-5 flex justify-center">
         <FormatToggles value={item.formats} onChange={onFormats} />
-        <div className="flex flex-wrap gap-2 pt-1">
-          <Button size="sm" variant="outline" onClick={onStart}>
-            <Play /> Start reading
-          </Button>
-          <Button size="sm" variant="stamp" onClick={onFinish}>
-            <BookCheck /> Finished it
-          </Button>
-          {!first && (
-            <Button size="sm" variant="outline" onClick={onReadNext}>
-              <ArrowUpToLine /> Read next
-            </Button>
-          )}
-          <Button size="icon-sm" variant="ghost" onClick={onRemove} aria-label={`Remove ${item.book.title}`}>
-            <Trash2 />
-          </Button>
-        </div>
       </div>
     </div>
+  );
+}
+
+function RoundAction({ label, onClick, stamp, children }: { label: string; onClick: () => void; stamp?: boolean; children: React.ReactNode }) {
+  return (
+    <button onClick={onClick} className="group flex w-14 flex-col items-center gap-1.5 text-[11px] text-ink-soft">
+      <span
+        className={cn(
+          "flex size-12 items-center justify-center rounded-full shadow-[0_1px_2px_rgb(42_36_28/0.12),0_6px_14px_-6px_rgb(42_36_28/0.3)] transition group-active:scale-90 [&_svg]:size-5",
+          stamp ? "bg-stamp text-white" : "bg-card text-ink",
+        )}
+      >
+        {children}
+      </span>
+      {label}
+    </button>
   );
 }

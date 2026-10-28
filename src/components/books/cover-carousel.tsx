@@ -13,12 +13,16 @@ export function CoverCarousel({
   index,
   onIndexChange,
   badge,
+  size = 150,
 }: {
   items: UserBook[];
   index: number;
   onIndexChange: (index: number) => void;
   badge?: (item: UserBook, index: number) => React.ReactNode;
+  /** Cover width in px; neighbours overlap it slightly. */
+  size?: number;
 }) {
+  const slot = size - 6;
   const scroller = useRef<HTMLDivElement>(null);
   // Scroll position in "books" (0 = first book centred), for the tilt.
   const [offset, setOffset] = useState(index);
@@ -53,7 +57,7 @@ export function CoverCarousel({
       ref={scroller}
       onScroll={onScroll}
       className="-mx-4 flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain py-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      style={{ paddingInline: "calc(50% - 72px)" }}
+      style={{ paddingInline: `calc(50% - ${slot / 2}px)` }}
       role="listbox"
       aria-label="Books"
       tabIndex={0}
@@ -73,13 +77,14 @@ export function CoverCarousel({
             aria-selected={i === index}
             aria-label={item.book.title}
             onClick={() => scrollTo(i)}
-            className="relative w-36 shrink-0 snap-center [perspective:700px]"
-            style={{ zIndex: 10 - Math.round(dist * 3) }}
+            className="relative shrink-0 snap-center"
+            style={{ width: slot, zIndex: 10 - Math.round(dist * 3), perspective: size * 4.5 }}
           >
             <div
-              className="relative -mx-[3px] w-[150px] will-change-transform"
+              className="relative -mx-[3px] will-change-transform"
               style={{
-                transform: `translateZ(${-dist * 60}px) rotateY(${Math.max(-45, Math.min(45, -d * 32))}deg) scale(${1 - dist * 0.08})`,
+                width: size,
+                transform: `translateZ(${-dist * size * 0.4}px) rotateY(${Math.max(-45, Math.min(45, -d * 32))}deg) scale(${1 - dist * 0.08})`,
                 opacity: 1 - Math.max(0, Math.abs(d) - 1.5) * 0.6,
               }}
             >
