@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Cover } from "@/components/books/cover";
 import { CurrentlyReading } from "@/components/journal/currently-reading";
+import { GoalShelf } from "@/components/journal/goal-shelf";
 import { MonthlyPick } from "@/components/journal/monthly-pick";
 import { PunchCard } from "@/components/journal/punch-card";
 import { Page, SectionTitle } from "@/components/shell/page";
@@ -37,11 +38,7 @@ export default async function JournalPage() {
           </p>
           <p className="font-type text-[12px] text-muted">{readThisMonth.length >= goal ? "Goal met — badge earned!" : `${goal - readThisMonth.length} more for your badge`}</p>
         </div>
-        <div className="mt-3 flex gap-1.5">
-          {Array.from({ length: goal }, (_, i) => (
-            <span key={i} className={`h-2 flex-1 rounded-full ${i < readThisMonth.length ? "bg-stamp" : "bg-paper-2"}`} />
-          ))}
-        </div>
+        <GoalShelf goal={goal} finished={readThisMonth.map((b) => b.book)} />
       </section>
 
       <SectionTitle>On the nightstand</SectionTitle>
@@ -62,7 +59,7 @@ export default async function JournalPage() {
             This month&apos;s book club
           </SectionTitle>
           <Link href="/club" className="paper flex items-center gap-4 p-4">
-            <Cover book={club.book} className="w-16" />
+            <Cover book={club.book} className="w-24" />
             <div className="min-w-0">
               <p className="font-serif text-lg leading-snug">{club.book.title}</p>
               <p className="text-[13px] text-muted">{club.book.authors.join(", ")}</p>

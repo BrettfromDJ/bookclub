@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { badgeCategory } from "./badges";
-import { fromGoogle, fromOpenLibrary } from "./book-search";
+import { fromGoogle, fromHardcover, fromOpenLibrary } from "./book-search";
 import { punchCard } from "./punch-card";
 import { positionAt, positionBetween } from "./ranking";
 import { skinById } from "./skins";
@@ -66,7 +66,14 @@ describe("book normalizers", () => {
     const b = fromOpenLibrary({ key: "/works/OL1W", title: "Emma", author_name: ["Jane Austen"], cover_i: 42, subject: ["Classics", "Romance"] });
     expect(b).toMatchObject({ source: "openlibrary", cover_url: "https://covers.openlibrary.org/b/id/42-M.jpg", badge_category: "romance" });
   });
-  it("skips untitled results", () => expect(fromGoogle({ id: "x" })).toBeNull());
+  it("maps Hardcover documents", () => {
+    const b = fromHardcover({ id: 312460, title: "Dune", author_names: ["Frank Herbert"], image: { url: "https://assets.hardcover.app/x.jpg" }, pages: 412, release_year: 1965, genres: ["Science fiction"] });
+    expect(b).toMatchObject({ source: "hardcover", external_id: "312460", cover_url: "https://assets.hardcover.app/x.jpg", page_count: 412, published_year: 1965, badge_category: "scifi" });
+  });
+  it("skips untitled results", () => {
+    expect(fromGoogle({ id: "x" })).toBeNull();
+    expect(fromHardcover({ id: 1 })).toBeNull();
+  });
 });
 
 it("falls back to the default skin", () => expect(skinById("nope").id).toBe("library"));
