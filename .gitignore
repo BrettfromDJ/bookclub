@@ -1,0 +1,16 @@
+node_modules/
+.next/
+out/
+coverage/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+.env*
+!.env.example
+
+# Capacitor / Xcode build output
+ios/App/Pods/
+ios/App/App/public/
+ios/DerivedData/
+xcuserdata/
