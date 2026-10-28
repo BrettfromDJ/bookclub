@@ -27,7 +27,7 @@ export default async function ClubPage() {
   return (
     <Page kicker={`${monthLabel(month)} · read with everyone`} title="Book Club">
       <section className="paper relative overflow-hidden p-6 text-center">
-        <Cover book={club.book} className="mx-auto w-36" />
+        <Cover book={club.book} className="mx-auto w-44" />
         <h2 className="mt-5 font-serif text-[26px] leading-tight">{club.book.title}</h2>
         <p className="mt-1 text-[15px] text-muted">{club.book.authors.join(", ")}</p>
         {club.blurb && <p className="mx-auto mt-4 max-w-sm text-[15px] leading-relaxed text-ink-soft">{club.blurb}</p>}

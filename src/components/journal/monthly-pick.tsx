@@ -26,7 +26,7 @@ export function MonthlyPick({ month, current, candidates }: { month: string; cur
       </p>
       {pick ? (
         <div className="mt-3 flex gap-4">
-          <Cover book={pick.book} className="w-20" />
+          <Cover book={pick.book} className="w-28" />
           <div className="min-w-0">
             <p className="font-serif text-xl leading-snug">{pick.book.title}</p>
             <p className="text-[13px] text-muted">{pick.book.authors.join(", ")}</p>
