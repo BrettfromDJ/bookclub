@@ -48,6 +48,8 @@ export type Profile = {
   is_private: boolean;
   is_admin: boolean;
   created_at: string;
+  /** Null until the welcome animation has printed their library card. */
+  card_printed_at: string | null;
 };
 
 export type BadgeKind = "genre" | "goal" | "milestone" | "club";

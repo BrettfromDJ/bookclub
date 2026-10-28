@@ -40,6 +40,7 @@ export const DEMO_PROFILE: Profile = {
   is_private: false,
   is_admin: true,
   created_at: "2026-01-04T12:00:00Z",
+  card_printed_at: "2026-01-04T12:00:00Z",
 };
 
 const ub = (b: Book, status: UserBook["status"], position: number, formats: UserBook["formats"], finished_at: string | null = null): UserBook => ({

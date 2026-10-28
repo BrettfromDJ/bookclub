@@ -99,6 +99,123 @@ body {
 }
 .animate-rise { animation: rise 420ms var(--ease-out) both; }
 
+/* ---------------------------------------------------------------------------
+ * Welcome card (components/journal/welcome-card.tsx). Durations must match
+ * the timings in that component.
+ * ------------------------------------------------------------------------- */
+
+/* Green picnic gingham: two translucent stripe layers darken where they cross. */
+.gingham {
+  background-color: #eeeadb;
+  background-image:
+    var(--grain),
+    linear-gradient(90deg, rgb(78 117 84 / 0.55) 50%, transparent 50%),
+    linear-gradient(rgb(78 117 84 / 0.55) 50%, transparent 50%);
+  background-size: 160px 160px, 64px 64px, 64px 64px;
+}
+
+/* Brushed-chrome printer slot. */
+.printer-slot {
+  background: linear-gradient(180deg, #fdfdfd 0%, #d9dcdf 30%, #a9aeb3 62%, #c9cdd1 82%, #8e9399 100%);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.9) inset, 0 -2px 4px rgb(0 0 0 / 0.15) inset, 0 6px 14px -4px rgb(0 0 0 / 0.45);
+}
+
+/* Clear plastic badge holder. */
+.badge-sleeve {
+  background: rgb(255 255 255 / 0.5);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.85) inset, 0 18px 40px -16px rgb(20 40 25 / 0.55), 0 4px 10px -4px rgb(20 40 25 / 0.3);
+  backdrop-filter: blur(2px);
+}
+
+/* Paper feeds out in receipt-printer jerks: advance, pause, advance… */
+@keyframes card-feed {
+  0% { transform: translateY(-100%); }
+  6% { transform: translateY(-85.7%); }
+  14% { transform: translateY(-85.7%); }
+  20% { transform: translateY(-71.4%); }
+  28% { transform: translateY(-71.4%); }
+  34% { transform: translateY(-57.1%); }
+  42% { transform: translateY(-57.1%); }
+  48% { transform: translateY(-42.9%); }
+  56% { transform: translateY(-42.9%); }
+  62% { transform: translateY(-28.6%); }
+  70% { transform: translateY(-28.6%); }
+  76% { transform: translateY(-14.3%); }
+  84% { transform: translateY(-14.3%); }
+  92%, 100% { transform: translateY(0); }
+}
+.animate-card-feed { animation: card-feed 2800ms ease-out both; }
+
+/* Released from the slot: falls, lands with a little bounce and tilt. */
+@keyframes card-drop {
+  0% { transform: translateY(0) rotate(0); animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.5); }
+  45% { transform: translateY(72px) rotate(-3.5deg); animation-timing-function: var(--ease-out); }
+  68% { transform: translateY(56px) rotate(1.5deg); }
+  84% { transform: translateY(66px) rotate(-2.4deg); }
+  100% { transform: translateY(64px) rotate(-2deg); }
+}
+.animate-card-drop { animation: card-drop 750ms both; }
+
+@keyframes slot-in {
+  from { transform: translateY(-160px); }
+  to { transform: none; }
+}
+.animate-slot-in { animation: slot-in 600ms var(--ease-out) both; }
+
+@keyframes slot-out {
+  to { transform: translateY(-50vh); opacity: 0; }
+}
+.animate-slot-out { animation: slot-out 700ms cubic-bezier(0.5, 0, 0.75, 0) both; }
+
+@keyframes clip-in {
+  0% { transform: translateY(-60px); opacity: 0; }
+  70% { transform: translateY(4px); opacity: 1; }
+  100% { transform: none; }
+}
+.animate-clip-in { animation: clip-in 380ms var(--ease-out) both; }
+
+/* Stickers slap on: oversized, then pressed flat at their own angle (--r). */
+@keyframes sticker-in {
+  0% { transform: scale(1.8) rotate(calc(var(--r, 0deg) - 20deg)); opacity: 0; }
+  60% { transform: scale(0.92) rotate(var(--r, 0deg)); opacity: 1; }
+  100% { transform: scale(1) rotate(var(--r, 0deg)); opacity: 1; }
+}
+.sticker {
+  filter: drop-shadow(0 3px 3px rgb(0 0 0 / 0.22));
+  animation: sticker-in 420ms var(--ease-out) both;
+}
+
+/* A glint of light sweeping across the plastic. */
+@keyframes sheen {
+  from { transform: translateX(-120%) skewX(-20deg); }
+  to { transform: translateX(220%) skewX(-20deg); }
+}
+.sheen::after {
+  content: "";
+  position: absolute;
+  inset: -10% auto -10% 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.75), transparent);
+  animation: sheen 900ms 150ms ease-in-out both;
+}
+
+@keyframes dots {
+  0% { content: ""; }
+  25% { content: "."; }
+  50% { content: ".."; }
+  75%, 100% { content: "..."; }
+}
+.printing-dots::after {
+  content: "";
+  display: inline-block;
+  width: 1.5em;
+  text-align: left;
+  animation: dots 1.2s steps(1) infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-punch, .animate-stamp, .animate-rise { animation: none; }
+  .animate-card-drop { animation: none; transform: translateY(64px) rotate(-2deg); }
+  .animate-clip-in, .sticker, .sheen::after, .animate-slot-out { animation: none; }
+  .animate-slot-out { opacity: 0; }
 }

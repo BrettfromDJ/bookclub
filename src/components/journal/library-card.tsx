@@ -1,12 +1,16 @@
 import { UserRound } from "lucide-react";
 import type { Profile } from "@/lib/types";
 
+/** Stable 10-digit card number derived from the user id, e.g. "7310 482 991". */
+export function cardNumber(profile: Pick<Profile, "id">) {
+  const digits = [...profile.id].map((c) => c.charCodeAt(0) % 10).join("").slice(-10).padStart(10, "7");
+  return `${digits.slice(0, 4)} ${digits.slice(4, 7)} ${digits.slice(7)}`;
+}
+
 /** Library card with the reader's photo and a due-date style stamp. */
 export function LibraryCard({ profile, totalRead }: { profile: Profile; totalRead: number }) {
   const since = new Date(profile.created_at).toLocaleDateString("en-US", { month: "short", year: "numeric" });
-  // Stable 10-digit card number derived from the user id.
-  const digits = [...profile.id].map((c) => c.charCodeAt(0) % 10).join("").slice(-10).padStart(10, "7");
-  const cardNo = `${digits.slice(0, 4)} ${digits.slice(4, 7)} ${digits.slice(7)}`;
+  const cardNo = cardNumber(profile);
   return (
     <section className="paper relative overflow-hidden p-5">
       <div className="absolute inset-x-0 top-0 h-2 bg-stamp" />

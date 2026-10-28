@@ -6,12 +6,15 @@ import { CurrentlyReading } from "@/components/journal/currently-reading";
 import { GoalShelf } from "@/components/journal/goal-shelf";
 import { MonthlyPick } from "@/components/journal/monthly-pick";
 import { PunchCard } from "@/components/journal/punch-card";
+import { WelcomeCard } from "@/components/journal/welcome-card";
 import { Page, SectionTitle } from "@/components/shell/page";
 import { DemoBanner } from "@/components/shell/demo-banner";
 import { getClubMonth, getMonthlyPicks, getShelf, getViewer } from "@/lib/data";
 import { monthStart } from "@/lib/month";
 
-export default async function JournalPage() {
+/** `?card=print` replays the first-sign-in card animation without saving anything. */
+export default async function JournalPage({ searchParams }: { searchParams: Promise<{ card?: string }> }) {
+  const { card } = await searchParams;
   const viewer = await getViewer();
   if (!viewer) redirect("/login");
   const { profile } = viewer;
@@ -27,6 +30,7 @@ export default async function JournalPage() {
   return (
     <Page kicker={new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })} title={`${greeting}, ${profile.display_name.split(" ")[0] || profile.username}`}>
       {viewer.demo && <DemoBanner />}
+      {card === "print" ? <WelcomeCard profile={profile} preview /> : !viewer.demo && !profile.card_printed_at && <WelcomeCard profile={profile} />}
       <PunchCard totalRead={read.length} name={profile.display_name || profile.username} />
 
       <SectionTitle>Monthly goal</SectionTitle>
