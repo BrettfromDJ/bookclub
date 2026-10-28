@@ -7,7 +7,7 @@ export const FORMATS: { id: Format; label: string }[] = [
 
 export type Book = {
   id: string;
-  source: "google" | "openlibrary" | "manual";
+  source: "hardcover" | "google" | "openlibrary" | "manual";
   external_id: string;
   title: string;
   authors: string[];
