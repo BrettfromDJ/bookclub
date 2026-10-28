@@ -47,7 +47,7 @@ Badges and feed activity are created by database triggers when a book is marked 
 
 The iOS app (`ios/`) is a native Capacitor shell that loads the deployed site and adds native haptics (the "punch"), the share sheet, the status bar and push notifications.
 
-1. Deploy to Vercel, then set `CAP_SERVER_URL=https://<your-domain>` in your shell.
+1. Deploy to Vercel, then set `CAP_SERVER_URL=https://plottwist.pro` in your shell.
 2. Run:
    ```bash
    npm run ios:sync
