@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { markCardPrinted } from "@/app/actions";
 import { cardNumber } from "@/components/journal/library-card";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,8 @@ import { cn } from "@/lib/utils";
 /**
  * First sign-in welcome: the reader's library card feeds out of a printer slot
  * in little receipt-printer jerks, drops free, gets clipped into a badge sleeve
- * and stickered. Plays once per account (see `card_printed_at`).
+ * and stickered. Once it lands it can be dragged around like a real card.
+ * Plays once per account (see `card_printed_at`).
  *
  * Timings mirror the keyframes in globals.css (`card-feed`, `card-drop`, …).
  */
@@ -32,6 +33,8 @@ export function WelcomeCard({ profile, preview = false }: { profile: Profile; pr
   const name = profile.display_name || profile.username;
   const cardNo = cardNumber(profile);
   const since = new Date(profile.created_at).toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  const [drag, setDrag] = useState({ x: 0, y: 0, tilt: 0, held: false });
+  const grab = useRef<{ px: number; py: number; x: number; y: number; lastX: number } | null>(null);
 
   useEffect(() => {
     // Saved up front so leaving halfway doesn't replay it next time.
@@ -63,6 +66,32 @@ export function WelcomeCard({ profile, preview = false }: { profile: Profile; pr
 
   if (!open) return null;
   const past = (p: Phase) => ORDER.indexOf(phase) >= ORDER.indexOf(p);
+  const draggable = past("dress");
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (!draggable) return;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    grab.current = { px: e.clientX, py: e.clientY, x: drag.x, y: drag.y, lastX: e.clientX };
+    setDrag((d) => ({ ...d, held: true }));
+    void tapHaptic();
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    const g = grab.current;
+    if (!g) return;
+    // Keep at least part of the card on screen.
+    const maxX = window.innerWidth / 2;
+    const maxY = window.innerHeight / 2;
+    const x = Math.max(-maxX, Math.min(maxX, g.x + e.clientX - g.px));
+    const y = Math.max(-maxY, Math.min(maxY, g.y + e.clientY - g.py));
+    // Leans into the direction it's moving, like a card held by its top.
+    const tilt = Math.max(-10, Math.min(10, (e.clientX - g.lastX) * 0.8));
+    g.lastX = e.clientX;
+    setDrag({ x, y, tilt, held: true });
+  };
+  const onPointerUp = () => {
+    grab.current = null;
+    setDrag((d) => ({ ...d, tilt: 0, held: false }));
+  };
 
   return (
     <div className={cn("polka-denim fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden px-6", phase === "done" && "safe-bottom")} role="dialog" aria-label="Your library card">
@@ -77,14 +106,29 @@ export function WelcomeCard({ profile, preview = false }: { profile: Profile; pr
       </div>
 
       {/* Card area; clipped at the slit while printing, free once dropped. */}
-      <div className={cn("relative z-10 -mt-[18px] w-[min(340px,calc(100vw-48px))]", past("drop") ? "overflow-visible" : "overflow-hidden")}>
-        <div className={cn("relative", phase === "slot" && "-translate-y-full", phase === "print" && "animate-card-feed", past("drop") && "animate-card-drop")}>
-          <BadgeClip show={past("dress")} />
-          <div className={cn("rounded-[18px] p-[7px] transition-[background,box-shadow] duration-500", past("dress") ? "badge-sleeve" : "bg-transparent")}>
-            <MemberCard name={name} username={profile.username} since={since} cardNo={cardNo} />
-            {past("dress") && <div className="sheen pointer-events-none absolute inset-0 overflow-hidden rounded-[18px]" />}
+      <div className={cn("relative -mt-[18px] w-[min(340px,calc(100vw-48px))]", past("drop") ? "z-30 overflow-visible" : "z-10 overflow-hidden")}>
+        <div
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+          className={cn(draggable && "touch-none select-none", draggable && (drag.held ? "cursor-grabbing" : "cursor-grab"))}
+          style={{
+            translate: `${drag.x}px ${drag.y}px`,
+            rotate: `${drag.tilt}deg`,
+            scale: drag.held ? "1.04" : "1",
+            filter: drag.held ? "drop-shadow(0 22px 22px rgb(20 30 70 / 0.35))" : undefined,
+            transition: "rotate 200ms var(--ease-out), scale 200ms var(--ease-out), filter 200ms",
+          }}
+        >
+          <div className={cn("relative", phase === "slot" && "-translate-y-full", phase === "print" && "animate-card-feed", past("drop") && "animate-card-drop")}>
+            <BadgeClip show={past("dress")} />
+            <div className={cn("rounded-[18px] p-[7px] transition-[background,box-shadow] duration-500", past("dress") ? "badge-sleeve" : "bg-transparent")}>
+              <MemberCard name={name} username={profile.username} since={since} cardNo={cardNo} />
+              {past("dress") && <div className="sheen pointer-events-none absolute inset-0 overflow-hidden rounded-[18px]" />}
+            </div>
+            {past("dress") && <Stickers />}
           </div>
-          {past("dress") && <Stickers />}
         </div>
       </div>
 
@@ -109,7 +153,7 @@ const ORDER: Phase[] = ["slot", "print", "drop", "dress", "done"];
 function MemberCard({ name, username, since, cardNo }: { name: string; username: string; since: string; cardNo: string }) {
   return (
     <div className="relative overflow-hidden rounded-[12px] bg-[#fbfaf6] px-4 pb-4 pt-3.5 text-[#1f1f1f] shadow-[0_1px_0_rgb(0_0_0/0.04)]" style={{ backgroundImage: "var(--grain)" }}>
-      <p className="text-center font-serif text-[clamp(20px,6.3vw,27px)] whitespace-nowrap font-black uppercase leading-none tracking-[-0.01em]">Book Lovers Club</p>
+      <p className="text-center font-serif text-[clamp(28px,9.5vw,38px)] whitespace-nowrap font-black uppercase leading-none tracking-[0.04em]">Member</p>
       <div className="mt-3 flex gap-3.5">
         <div className="w-[34%] shrink-0">
           <div className="flex aspect-[4/5] items-center justify-center rounded-[3px] bg-[#e7dfcc] font-serif text-[46px] font-black text-[#6f5d43] shadow-[inset_0_0_0_1px_rgb(0_0_0/0.08)]">
