@@ -48,7 +48,7 @@ export function WrapupReceipt({ wrapup, username, back = "/" }: { wrapup: Wrapup
 
   const done = phase === "done";
   return (
-    <div className={cn("polka-denim min-h-dvh", !done && "fixed inset-0 overflow-hidden")}>
+    <div className={cn("checker-stars min-h-dvh", !done && "fixed inset-0 overflow-hidden")}>
       <Link href={back} aria-label="Close" className="safe-top fixed right-4 top-3 z-30 mt-1 flex size-9 items-center justify-center rounded-full bg-paper/85 text-ink-soft backdrop-blur">
         <X className="size-4" />
       </Link>
