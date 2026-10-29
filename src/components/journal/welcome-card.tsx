@@ -64,7 +64,7 @@ export function WelcomeCard({ profile, preview = false }: { profile: Profile; pr
   const past = (p: Phase) => ORDER.indexOf(phase) >= ORDER.indexOf(p);
 
   return (
-    <div className={cn("gingham fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden px-6", phase === "done" && "safe-bottom")} role="dialog" aria-label="Your library card">
+    <div className={cn("polka-denim fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden px-6", phase === "done" && "safe-bottom")} role="dialog" aria-label="Your library card">
       <button type="button" onClick={() => setOpen(false)} className="safe-top absolute right-4 top-3 rounded-full bg-paper/80 px-3 py-1 font-type text-[12px] text-ink-soft backdrop-blur" hidden={phase === "done"}>
         Skip
       </button>
