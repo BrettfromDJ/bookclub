@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ReceiptText } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Cover } from "@/components/books/cover";
@@ -6,15 +6,13 @@ import { CurrentlyReading } from "@/components/journal/currently-reading";
 import { GoalShelf } from "@/components/journal/goal-shelf";
 import { MonthlyPick } from "@/components/journal/monthly-pick";
 import { PunchCard } from "@/components/journal/punch-card";
-import { WelcomeCard } from "@/components/journal/welcome-card";
 import { Page, SectionTitle } from "@/components/shell/page";
 import { DemoBanner } from "@/components/shell/demo-banner";
 import { getClubMonth, getMonthlyPicks, getShelf, getViewer } from "@/lib/data";
 import { monthStart } from "@/lib/month";
+import { previousMonth } from "@/lib/wrapup";
 
-/** `?card=print` replays the first-sign-in card animation without saving anything. */
-export default async function JournalPage({ searchParams }: { searchParams: Promise<{ card?: string }> }) {
-  const { card } = await searchParams;
+export default async function JournalPage() {
   const viewer = await getViewer();
   if (!viewer) redirect("/login");
   const { profile } = viewer;
@@ -30,7 +28,6 @@ export default async function JournalPage({ searchParams }: { searchParams: Prom
   return (
     <Page kicker={new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })} title={`${greeting}, ${profile.display_name.split(" ")[0] || profile.username}`}>
       {viewer.demo && <DemoBanner />}
-      {card === "print" ? <WelcomeCard profile={profile} preview /> : !viewer.demo && !profile.card_printed_at && <WelcomeCard profile={profile} />}
       <PunchCard totalRead={read.length} name={profile.display_name || profile.username} />
 
       <SectionTitle>Monthly goal</SectionTitle>
@@ -44,6 +41,28 @@ export default async function JournalPage({ searchParams }: { searchParams: Prom
         </div>
         <GoalShelf goal={goal} finished={readThisMonth.map((b) => b.book)} />
       </section>
+
+      <SectionTitle
+        action={
+          <Link href={`/wrapup?month=${previousMonth(month).slice(0, 7)}`} className="flex items-center gap-1 text-[13px] text-muted">
+            Last month <ArrowRight className="size-3.5" />
+          </Link>
+        }
+      >
+        Monthly wrap-up
+      </SectionTitle>
+      <Link href="/wrapup" className="paper flex items-center gap-4 p-4 active:scale-[0.99]">
+        <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-paper-2">
+          <ReceiptText className="size-6 text-ink-soft" strokeWidth={1.6} />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block font-serif text-lg leading-snug">Print your {new Date().toLocaleDateString("en-US", { month: "long" })} receipt</span>
+          <span className="block text-[13px] text-muted">
+            {readThisMonth.length} {readThisMonth.length === 1 ? "book" : "books"} so far this month
+          </span>
+        </span>
+        <ArrowRight className="size-4 text-muted" />
+      </Link>
 
       <SectionTitle>On the nightstand</SectionTitle>
       <CurrentlyReading initial={shelf.filter((b) => b.status === "reading")} />

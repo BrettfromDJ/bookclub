@@ -19,7 +19,7 @@ export function TabBar() {
   // Lights up the tapped tab right away instead of after the next screen
   // arrives; it lapses on its own once the path changes.
   const [tapped, setTapped] = useState<{ href: string; from: string } | null>(null);
-  if (path.startsWith("/login") || path.startsWith("/auth")) return null;
+  if (path.startsWith("/login") || path.startsWith("/auth") || path.startsWith("/wrapup")) return null;
   const pending = tapped?.from === path ? tapped.href : null;
   return (
     <nav className="safe-bottom fixed inset-x-0 bottom-0 z-40 border-t border-line bg-paper/85 backdrop-blur-xl">

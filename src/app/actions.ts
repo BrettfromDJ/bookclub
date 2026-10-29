@@ -127,14 +127,6 @@ export async function updateProfile(patch: ProfilePatch): Promise<Result> {
   return fail(error) ?? { ok: true, data: null };
 }
 
-/** Records that the welcome animation played, so it only plays once. */
-export async function markCardPrinted(): Promise<Result> {
-  const s = await session();
-  if (!s) return DEMO;
-  const { error } = await s.supabase.from("profiles").update({ card_printed_at: new Date().toISOString() }).eq("id", s.userId);
-  return fail(error) ?? { ok: true, data: null };
-}
-
 export async function setTopBook(slot: number, candidate: BookCandidate | null): Promise<Result> {
   const s = await session();
   if (!s) return DEMO;
