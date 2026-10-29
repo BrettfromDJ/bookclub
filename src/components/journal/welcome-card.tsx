@@ -18,7 +18,8 @@ import { cn } from "@/lib/utils";
  */
 type Phase = "slot" | "print" | "drop" | "dress" | "done";
 
-const SLOT_MS = 600;
+// A beat with the printer sitting idle before it starts feeding.
+const SLOT_MS = 450;
 const FEED_MS = 2800;
 const DROP_MS = 750;
 const DRESS_MS = 1300;
@@ -70,7 +71,7 @@ export function WelcomeCard({ profile, preview = false }: { profile: Profile; pr
       </button>
 
       {/* Printer slot: the card feeds out from under the slit. */}
-      <div className={cn("relative z-20 h-9 w-[min(372px,calc(100vw-24px))]", past("dress") ? "animate-slot-out" : "animate-slot-in")}>
+      <div className="relative z-20 h-9 w-[min(372px,calc(100vw-24px))]">
         <div className="printer-slot absolute inset-0 rounded-[14px]" />
         <div className="absolute inset-x-5 top-1/2 h-[7px] -translate-y-1/2 rounded-full bg-[#1d1f22] shadow-[inset_0_2px_3px_rgb(0_0_0/0.8)]" />
       </div>
@@ -87,9 +88,9 @@ export function WelcomeCard({ profile, preview = false }: { profile: Profile; pr
         </div>
       </div>
 
-      {/* Caption: status while printing, welcome when done. Fixed height so the card doesn't move. */}
-      <div className="relative z-10 mt-28 flex h-44 w-full max-w-sm flex-col items-center text-center">
-        {phase === "done" ? (
+      {/* Welcome message once the card is done. Fixed height so the card doesn't move. */}
+      <div className="relative z-10 mt-36 flex h-44 w-full max-w-sm flex-col items-center text-center">
+        {phase === "done" && (
           <div className="paper animate-rise w-full px-5 pb-5 pt-4">
             <h2 className="font-serif text-[26px] leading-tight">Welcome to the club, {name.split(" ")[0]}.</h2>
             <p className="mt-1 font-type text-[12px] text-muted">Card no. {cardNo} · issued today</p>
@@ -97,13 +98,6 @@ export function WelcomeCard({ profile, preview = false }: { profile: Profile; pr
               Open my journal <ArrowRight />
             </Button>
           </div>
-        ) : (
-          past("print") && (
-            <p className="rounded-full bg-paper/85 px-4 py-1.5 font-type text-[12px] uppercase tracking-[0.18em] text-ink-soft backdrop-blur">
-              {past("drop") ? "Laminating" : "Printing your card"}
-              <span className="printing-dots" />
-            </p>
-          )
         )}
       </div>
     </div>

@@ -15,9 +15,9 @@ const DEMO: Result<never> = { ok: false, error: "Demo mode — connect Supabase 
 async function session() {
   const supabase = await getServerSupabase();
   if (!supabase) return null;
-  const { data } = await supabase.auth.getUser();
-  if (!data.user) redirect("/login");
-  return { supabase, userId: data.user.id };
+  const { data } = await supabase.auth.getClaims();
+  if (!data?.claims.sub) redirect("/login");
+  return { supabase, userId: data.claims.sub };
 }
 
 const fail = (error: { message: string } | null): Result<never> | null => (error ? { ok: false, error: error.message } : null);

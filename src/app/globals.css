@@ -154,23 +154,12 @@ body {
 /* Released from the slot: falls, lands with a little bounce and tilt. */
 @keyframes card-drop {
   0% { transform: translateY(0) rotate(0); animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.5); }
-  45% { transform: translateY(72px) rotate(-3.5deg); animation-timing-function: var(--ease-out); }
-  68% { transform: translateY(56px) rotate(1.5deg); }
-  84% { transform: translateY(66px) rotate(-2.4deg); }
-  100% { transform: translateY(64px) rotate(-2deg); }
+  45% { transform: translateY(104px) rotate(-3.5deg); animation-timing-function: var(--ease-out); }
+  68% { transform: translateY(88px) rotate(1.5deg); }
+  84% { transform: translateY(98px) rotate(-2.4deg); }
+  100% { transform: translateY(96px) rotate(-2deg); }
 }
 .animate-card-drop { animation: card-drop 750ms both; }
-
-@keyframes slot-in {
-  from { transform: translateY(-160px); }
-  to { transform: none; }
-}
-.animate-slot-in { animation: slot-in 600ms var(--ease-out) both; }
-
-@keyframes slot-out {
-  to { transform: translateY(-50vh); opacity: 0; }
-}
-.animate-slot-out { animation: slot-out 700ms cubic-bezier(0.5, 0, 0.75, 0) both; }
 
 @keyframes clip-in {
   0% { transform: translateY(-60px); opacity: 0; }
@@ -204,23 +193,8 @@ body {
   animation: sheen 900ms 150ms ease-in-out both;
 }
 
-@keyframes dots {
-  0% { content: ""; }
-  25% { content: "."; }
-  50% { content: ".."; }
-  75%, 100% { content: "..."; }
-}
-.printing-dots::after {
-  content: "";
-  display: inline-block;
-  width: 1.5em;
-  text-align: left;
-  animation: dots 1.2s steps(1) infinite;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .animate-punch, .animate-stamp, .animate-rise { animation: none; }
-  .animate-card-drop { animation: none; transform: translateY(64px) rotate(-2deg); }
-  .animate-clip-in, .sticker, .sheen::after, .animate-slot-out { animation: none; }
-  .animate-slot-out { opacity: 0; }
+  .animate-card-drop { animation: none; transform: translateY(96px) rotate(-2deg); }
+  .animate-clip-in, .sticker, .sheen::after { animation: none; }
 }

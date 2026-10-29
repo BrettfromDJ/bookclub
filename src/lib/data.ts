@@ -15,9 +15,10 @@ export type Viewer = { profile: Profile; demo: boolean } | null;
 export const getViewer = cache(async (): Promise<Viewer> => {
   const supabase = await getServerSupabase();
   if (!supabase) return { profile: DEMO_PROFILE, demo: true };
-  const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user) return null;
-  const { data } = await supabase.from("profiles").select("*").eq("id", auth.user.id).single();
+  // Verified locally against the signing keys; no auth-server round trip.
+  const { data: auth } = await supabase.auth.getClaims();
+  if (!auth?.claims.sub) return null;
+  const { data } = await supabase.from("profiles").select("*").eq("id", auth.claims.sub).single();
   return data ? { profile: data as Profile, demo: false } : null;
 });
 
