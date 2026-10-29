@@ -47,14 +47,30 @@ function nextMonth(month: string): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`;
 }
 
-/** A full sample month, for previewing the receipt without any reading history. */
-export function sampleWrapup(month: string): Wrapup {
-  const books = [
+export const SAMPLES = ["full", "one", "many", "unrated", "empty"] as const;
+export type Sample = (typeof SAMPLES)[number];
+
+/** Sample months for previewing the receipt without any reading history. */
+export function sampleWrapup(month: string, sample: Sample): Wrapup {
+  const pool = [
     { book: { ...DEMO_BOOKS.piranesi, page_count: 272 }, rating: 5 },
     { book: { ...DEMO_BOOKS.rebecca, page_count: 410 }, rating: 4 },
     { book: { ...DEMO_BOOKS.circe, page_count: 393 }, rating: 4 },
     { book: { ...DEMO_BOOKS.dune, page_count: 617 }, rating: 3 },
     { book: { ...DEMO_BOOKS.educated, page_count: 334 }, rating: 4 },
+    { book: { ...DEMO_BOOKS.emma, page_count: 474 }, rating: 2 },
+    { book: { ...DEMO_BOOKS.martian, page_count: 369 }, rating: 5 },
+    { book: { ...DEMO_BOOKS.secret, page_count: 559 }, rating: 4 },
+    { book: { ...DEMO_BOOKS.hailmary, page_count: 476 }, rating: 5 },
+    { book: { ...DEMO_BOOKS.tomorrow, page_count: 401 }, rating: 3 },
   ];
-  return { month, books, favorite: books[0].book, pagesRead: 2026, averageRating: 4 };
+  const picked = { full: pool.slice(0, 5), one: pool.slice(0, 1), many: pool, unrated: pool.slice(0, 5).map((b) => ({ ...b, rating: null })), empty: [] }[sample];
+  const rated = picked.filter((b) => b.rating != null);
+  return {
+    month,
+    books: picked,
+    favorite: picked[0]?.book ?? null,
+    pagesRead: picked.length ? picked.reduce((a, b) => a + b.book.page_count, 0) : null,
+    averageRating: rated.length ? Math.round((rated.reduce((a, b) => a + b.rating!, 0) / rated.length) * 10) / 10 : null,
+  };
 }

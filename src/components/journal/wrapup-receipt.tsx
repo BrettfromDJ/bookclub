@@ -21,7 +21,7 @@ const DROP_MS = 600;
 // When each feed jerk starts, as a fraction of the feed duration (matches paper-feed).
 const FEED_STEPS = [0, 0.14, 0.28, 0.42, 0.56, 0.7, 0.84];
 
-export function WrapupReceipt({ wrapup, username }: { wrapup: Wrapup; username: string }) {
+export function WrapupReceipt({ wrapup, username, back = "/" }: { wrapup: Wrapup; username: string; back?: string }) {
   const [phase, setPhase] = useState<Phase>("idle");
   const [run, setRun] = useState(0);
   // Longer receipts take a little longer to print.
@@ -49,7 +49,7 @@ export function WrapupReceipt({ wrapup, username }: { wrapup: Wrapup; username: 
   const done = phase === "done";
   return (
     <div className={cn("polka-denim min-h-dvh", !done && "fixed inset-0 overflow-hidden")}>
-      <Link href="/" aria-label="Close" className="safe-top fixed right-4 top-3 z-30 mt-1 flex size-9 items-center justify-center rounded-full bg-paper/85 text-ink-soft backdrop-blur">
+      <Link href={back} aria-label="Close" className="safe-top fixed right-4 top-3 z-30 mt-1 flex size-9 items-center justify-center rounded-full bg-paper/85 text-ink-soft backdrop-blur">
         <X className="size-4" />
       </Link>
 
@@ -77,7 +77,7 @@ export function WrapupReceipt({ wrapup, username }: { wrapup: Wrapup; username: 
               <RotateCcw /> Print again
             </Button>
             <Button asChild variant="primary" size="lg" className="flex-1">
-              <Link href="/">Done</Link>
+              <Link href={back}>Done</Link>
             </Button>
           </div>
         )}

@@ -25,7 +25,7 @@ export function TabBar() {
     <nav className="safe-bottom fixed inset-x-0 bottom-0 z-40 border-t border-line bg-paper/85 backdrop-blur-xl">
       <ul className="mx-auto flex max-w-lg justify-around px-2 pt-1.5">
         {TABS.map(({ href, label, icon: Icon }) => {
-          const active = pending ? pending === href : href === "/" ? path === "/" : path.startsWith(href) || (href === "/me" && (path.startsWith("/u/") || path.startsWith("/settings") || path.startsWith("/badges")));
+          const active = pending ? pending === href : href === "/" ? path === "/" : path.startsWith(href) || (href === "/me" && (path.startsWith("/u/") || path.startsWith("/settings") || path.startsWith("/lab") || path.startsWith("/badges")));
           return (
             <li key={href}>
               <Link href={href} onClick={() => setTapped({ href, from: path })} className={cn("flex w-16 flex-col items-center gap-0.5 pb-1.5 pt-1 text-[10px] font-medium transition-colors", active ? "text-ink" : "text-muted")}>
