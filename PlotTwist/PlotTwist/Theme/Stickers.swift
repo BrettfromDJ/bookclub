@@ -227,10 +227,12 @@ struct StripedPaper: View {
             GeometryReader { geo in
                 // In the Canva file the stripe image is ~26% wider than the artboard.
                 let tileWidth = geo.size.width * 1.26
-                let tileHeight = tileWidth * image.size.height / image.size.width
-                let count = Int((geo.size.height / tileHeight).rounded(.up))
+                let tileHeight = image.size.width > 0 ? tileWidth * image.size.height / image.size.width : 0
+                // SwiftUI can lay this out at zero size first; dividing by zero there would crash.
+                let ratio = tileHeight > 0 ? geo.size.height / tileHeight : 0
+                let count = ratio.isFinite ? min(max(Int(ratio.rounded(.up)), 1), 20) : 1
                 VStack(spacing: 0) {
-                    ForEach(0..<max(count, 1), id: \.self) { i in
+                    ForEach(0..<count, id: \.self) { i in
                         Image(uiImage: image)
                             .resizable()
                             .frame(width: tileWidth, height: tileHeight)

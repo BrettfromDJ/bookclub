@@ -23,22 +23,25 @@ struct HomeView: View {
 
     var body: some View {
         GeometryReader { geo in
-            ScrollView {
-                VStack(spacing: 0) {
-                    if model.isDemo { DemoBanner() }
-                    ReadingArtboard(addBook: { addingBook = true })
-                    ClubArtboard()
-                    MenuArtboard(share: { sharing = true })
-                    LibraryArtboard()
-                    Wordmark(size: 22)
-                        .padding(.vertical, 28)
-                        .frame(maxWidth: .infinity)
-                        .background(Color.cream)
+            // Skip the zero-width first layout pass so nothing is drawn at scale 0.
+            if geo.size.width > 0 {
+                ScrollView {
+                    VStack(spacing: 0) {
+                        if model.isDemo { DemoBanner() }
+                        ReadingArtboard(addBook: { addingBook = true })
+                        ClubArtboard()
+                        MenuArtboard(share: { sharing = true })
+                        LibraryArtboard()
+                        Wordmark(size: 22)
+                            .padding(.vertical, 28)
+                            .frame(maxWidth: .infinity)
+                            .background(Color.cream)
+                    }
+                    .environment(\.designScale, geo.size.width / Design.width)
                 }
-                .environment(\.designScale, geo.size.width / Design.width)
+                .scrollIndicators(.hidden)
+                .refreshable { await model.refresh() }
             }
-            .scrollIndicators(.hidden)
-            .refreshable { await model.refresh() }
         }
         .background {
             VStack(spacing: 0) {
