@@ -72,7 +72,7 @@ struct TopEightEditor: View {
         .buttonStyle(.squish)
         .onDrag {
             dragging = slot.id
-            return NSItemProvider(object: slot.id.uuidString as NSString)
+            return NSItemProvider(object: slot.id as NSString)
         } preview: {
             Group {
                 if let book = slot.book { BookCover(book) } else { RoundedRectangle(cornerRadius: 4).fill(Color.butter) }
