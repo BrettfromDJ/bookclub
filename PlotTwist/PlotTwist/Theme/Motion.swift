@@ -218,4 +218,7 @@ private struct RevealOnAppear: ViewModifier {
 
 extension View {
     func revealsOnAppear() -> some View { modifier(RevealOnAppear()) }
+
+    /// Purely decorative: never catches a tap meant for something else.
+    func decor() -> some View { allowsHitTesting(false).accessibilityHidden(true) }
 }

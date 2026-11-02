@@ -218,6 +218,11 @@ final class DemoBackend: Backend {
                     pageCount: c.pageCount, publishedYear: c.publishedYear, categories: c.categories, badgeCategory: c.badgeCategory)
     }
 
+    func setTopEight(_ books: [Book?]) async throws {
+        top = [:]
+        for (i, book) in books.prefix(8).enumerated() { if let book { top[i + 1] = book } }
+    }
+
     func badges(userID: UUID) async throws -> [EarnedBadge] { userID == me ? earned : [] }
 
     // MARK: Book club

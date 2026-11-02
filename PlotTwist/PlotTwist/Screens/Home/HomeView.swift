@@ -90,8 +90,8 @@ private struct ReadingArtboard: View {
             StripedPaper(kind: .blue, top: 0).place(0, 0, 1080, 1880)
 
             // Header card: the dashed border draws itself around the headline.
-            RoundedRectangle(cornerRadius: 51 * s).fill(Color.cream).place(0, -57, 1080, 616)
-            DrawnDashedBorder(cornerRadius: 51, lineWidth: 5).place(32, 18, 1026, 516)
+            RoundedRectangle(cornerRadius: 51 * s).fill(Color.cream).decor().place(0, -57, 1080, 616)
+            DrawnDashedBorder(cornerRadius: 51, lineWidth: 5).decor().place(32, 18, 1026, 516)
 
             // Ripped paper unfolds, the clip drops onto it, then the TBR fans out.
             Artwork(name: "paper-rippedPaper", contentMode: nil) {
@@ -100,9 +100,10 @@ private struct ReadingArtboard: View {
             .entrance(.paper, delay: 0.15)
             .place(218, 656, 639, 869, rotation: 90)
             StickerView(.binderClip)
+                .decor()
                 .entrance(.drop, delay: 0.45)
                 .place(322, 573, 430, 232)
-            TBRFan()
+            TBRCarousel().place(0, 780, 1080, 500)
 
             Button(action: addBook) {
                 ArtboardPill(title: "add a book to your tbr", fill: .olive, text: .cream, fontSize: 33)
@@ -112,9 +113,9 @@ private struct ReadingArtboard: View {
             .entrance(.pop(spin: 8), delay: 0.9)
             .place(324, 1295, 418, 98, rotation: 2.3)
 
-            StickerView(.goldStar).idle(.spin, period: 9).entrance(.pop(spin: -180), delay: 0.5).place(60, 734, 96, 101)
-            StickerView(.redBurst).idle(.pulse(1.15), period: 0.8).entrance(.pop(spin: 90), delay: 0.55).place(115, 628, 127, 122)
-            StickerView(.smiley).idle(.wobble(12), period: 1.1).entrance(.pop(spin: 200), delay: 0.65).place(901, 734, 111, 111, rotation: -11)
+            StickerView(.goldStar).decor().idle(.spin, period: 9).entrance(.pop(spin: -180), delay: 0.5).place(60, 734, 96, 101)
+            StickerView(.redBurst).decor().idle(.pulse(1.15), period: 0.8).entrance(.pop(spin: 90), delay: 0.55).place(115, 628, 127, 122)
+            StickerView(.smiley).decor().idle(.wobble(12), period: 1.1).entrance(.pop(spin: 200), delay: 0.65).place(901, 734, 111, 111, rotation: -11)
 
             // Current read
             NavigationLink(value: model.currentlyReading.first.map { Route.book($0.id) } ?? Route.shelf) {
@@ -129,15 +130,17 @@ private struct ReadingArtboard: View {
                 .entrance(.drop, delay: 0.2)
                 .place(716, 119, 242, 359, rotation: 5)
             StickerView(.daisies)
+                .decor()
                 .idle(.wobble(7), period: 1.7)
                 .entrance(.pop(spin: -120), delay: 0.45)
                 .place(769, -30, 222, 167)
             StickerView(.arrow)
+                .decor()
                 .idle(.nudge(x: -7, y: -5), period: 0.6)
                 .entrance(.pop(), delay: 0.8)
                 .place(959, 407, 85, 63, rotation: 19)
 
-            HeadlineLines().place(82, 78, 635, 396)
+            HeadlineLines().decor().place(82, 78, 635, 396)
 
             // Reading receipt printer
             NavigationLink(value: Route.receipt) { ReceiptPrinter() }
@@ -145,6 +148,7 @@ private struct ReadingArtboard: View {
                 .entrance(.rise, delay: 0.3)
                 .place(103, 1457, 864, 382)
             StickerView(.paperPlane)
+                .decor()
                 .idle(.bob(8), period: 1.4)
                 .entrance(.fly(x: -260, y: 140), delay: 0.6)
                 .place(-134, 1401, 432, 264)
@@ -221,51 +225,148 @@ private struct CurrentReadCover: View {
     }
 }
 
-/// The five TBR covers: they start stacked in the middle, then fan out across the
-/// torn paper, top pick in the center.
-private struct TBRFan: View {
+/// The TBR show reel: five covers fanned across the torn paper, the current one
+/// in the middle. It rotates through the whole TBR on its own, and you can swipe
+/// it either way. Tap the middle cover to open it, a side cover to bring it forward.
+/// (Local design coordinates: the reel spans 1080 × 500, starting at y 780.)
+private struct TBRCarousel: View {
     @Environment(AppModel.self) private var model
     @Environment(\.designScale) private var s
     @Environment(\.revealed) private var revealed
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    /// Which TBR book is in the middle. Grows forever; wrapped with modulo.
+    @State private var focus = 0
+    @State private var drag: CGFloat = 0
+    @State private var pausedUntil = Date.distantPast
 
-    // Canva positions: far left, left, center, right, far right.
-    private static let slots: [(x: CGFloat, y: CGFloat, w: CGFloat, h: CGFloat)] = [
-        (178, 932, 145, 217), (287, 898, 190, 286), (423, 846, 241, 363), (614, 898, 188, 286), (757, 932, 145, 217),
-    ]
-    /// Which TBR rank sits in each slot (back to front draw order).
-    private static let drawOrder: [(slot: Int, rank: Int)] = [(0, 4), (4, 3), (1, 2), (3, 1), (2, 0)]
+    private static let originY: CGFloat = 780
+    // Her five Canva slots, from far left (-2) to far right (+2): center x, top y, width, height.
+    private static let centers: [CGFloat] = [250.5, 382, 543.5, 708, 829.5]
+    private static let tops: [CGFloat] = [932, 898, 846, 898, 932]
+    private static let widths: [CGFloat] = [145, 190, 241, 188, 145]
+    private static let heights: [CGFloat] = [217, 286, 363, 286, 217]
+    /// Drag distance (design px) that moves the reel by one book.
+    private static let step: CGFloat = 150
 
     var body: some View {
         let tbr = model.tbr
-        let shown = revealed || reduceMotion
-        if tbr.isEmpty {
-            NavigationLink(value: Route.shelf) {
-                Text("your tbr is empty.\nadd something juicy ↓")
-                    .font(.serif(18))
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(Color.brick)
-            }
-            .entrance(.rise, delay: 0.6)
-            .place(178, 846, 724, 363)
-        } else {
-            ForEach(Self.drawOrder, id: \.slot) { item in
-                if item.rank < tbr.count {
-                    let slot = Self.slots[item.slot]
-                    let fromCenter = 540 - (slot.x + slot.w / 2)
-                    NavigationLink(value: Route.shelf) {
-                        BookCover(tbr[item.rank].book)
-                            .shadow(color: .black.opacity(0.28), radius: 5, x: 0, y: 5)
-                    }
-                    .buttonStyle(.squish)
-                    .offset(x: shown ? 0 : fromCenter * s, y: shown ? 0 : 30 * s)
-                    .rotationEffect(.degrees(shown ? 0 : Double(item.slot - 2) * -14))
-                    .scaleEffect(shown ? 1 : 0.85)
-                    .opacity(shown ? 1 : 0)
-                    .animation(reduceMotion ? nil : .spring(response: 0.6, dampingFraction: 0.62).delay(shown ? 0.55 + Double(abs(item.slot - 2)) * 0.07 : 0),
-                               value: shown)
-                    .place(slot.x, slot.y, slot.w, slot.h)
+        ZStack(alignment: .topLeading) {
+            if tbr.isEmpty {
+                NavigationLink(value: Route.shelf) {
+                    Text("your tbr is empty.\nadd something juicy ↓")
+                        .font(.serif(18))
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(Color.brick)
                 }
+                .entrance(.rise, delay: 0.6)
+                .place(178, 846 - Self.originY, 724, 363)
+            } else {
+                ForEach(Array(tbr.enumerated()), id: \.element.id) { index, row in
+                    // Only the books on (or about to slide onto) the paper are drawn.
+                    if abs(slotPosition(index: index, count: tbr.count)) <= 3.2 {
+                        cover(row, index: index, count: tbr.count)
+                    }
+                }
+            }
+        }
+        .frame(width: Design.width * s, height: 500 * s, alignment: .topLeading)
+        .contentShape(Rectangle())
+        .simultaneousGesture(swipe(count: tbr.count))
+        .sensoryFeedback(.selection, trigger: focus)
+        .task(id: tbr.count) { await autoAdvance(count: tbr.count) }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Your TBR")
+        .accessibilityAdjustableAction { direction in
+            switch direction {
+            case .increment: move(by: 1)
+            case .decrement: move(by: -1)
+            @unknown default: break
+            }
+        }
+    }
+
+    /// Position of book `index` relative to the middle, including any drag in progress.
+    private func slotPosition(index: Int, count: Int) -> CGFloat {
+        guard count > 0 else { return 0 }
+        var rel = (index - focus) % count
+        if rel < 0 { rel += count }
+        // Wrap so books sit on whichever side is closer.
+        if rel > count / 2 { rel -= count }
+        return CGFloat(rel) + drag / Self.step
+    }
+
+    /// Interpolates her slot geometry for a fractional position; beyond ±2 books fade out.
+    private func geometry(at pos: CGFloat) -> (cx: CGFloat, top: CGFloat, w: CGFloat, h: CGFloat, opacity: Double) {
+        let clamped = min(max(pos, -2), 2)
+        let lower = Int(floor(clamped)) + 2, upper = min(lower + 1, 4)
+        let t = clamped - floor(clamped)
+        func lerp(_ a: [CGFloat]) -> CGFloat { a[lower] + (a[upper] - a[lower]) * t }
+        let overflow = abs(pos) - 2
+        let cx = lerp(Self.centers) + (overflow > 0 ? (pos > 0 ? 1 : -1) * overflow * 120 : 0)
+        return (cx, lerp(Self.tops), lerp(Self.widths), lerp(Self.heights), overflow > 0 ? max(0, 1 - Double(overflow)) : 1)
+    }
+
+    @ViewBuilder
+    private func cover(_ row: UserBook, index: Int, count: Int) -> some View {
+        let pos = slotPosition(index: index, count: count)
+        let g = geometry(at: pos)
+        let shown = revealed || reduceMotion
+        let isCenter = abs(pos) < 0.5
+        Group {
+            if isCenter {
+                NavigationLink(value: Route.book(row.id)) { BookCover(row.book) }
+            } else {
+                Button { move(by: Int(pos.rounded())) } label: { BookCover(row.book) }
+            }
+        }
+        .buttonStyle(.squish)
+        .shadow(color: .black.opacity(0.28), radius: 5, x: 0, y: 5)
+        .frame(width: g.w * s, height: g.h * s)
+        .rotation3DEffect(.degrees(Double(-pos) * 10), axis: (0, 1, 0), perspective: 0.6)
+        // Entrance: everything starts stacked in the middle, then fans out.
+        .offset(x: shown ? 0 : (543.5 - g.cx) * s, y: shown ? 0 : 30 * s)
+        .scaleEffect(shown ? 1 : 0.85)
+        .opacity(shown ? g.opacity : 0)
+        .position(x: g.cx * s, y: (g.top - Self.originY + g.h / 2) * s)
+        .zIndex(10 - Double(abs(pos)))
+        .allowsHitTesting(g.opacity > 0.5)
+        .animation(reduceMotion ? nil : .spring(response: 0.6, dampingFraction: 0.62).delay(shown ? 0.55 + Double(abs(pos)) * 0.07 : 0), value: shown)
+    }
+
+    private func swipe(count: Int) -> some Gesture {
+        DragGesture(minimumDistance: 12)
+            .onChanged { value in
+                guard count > 1, abs(value.translation.width) > abs(value.translation.height) else { return }
+                drag = value.translation.width / s
+                pausedUntil = .now.addingTimeInterval(6)
+            }
+            .onEnded { value in
+                guard count > 1 else { return }
+                // Fast flicks move further.
+                let projected = value.predictedEndTranslation.width / s
+                let steps = Int((-projected / Self.step).rounded())
+                withAnimation(.spring(response: 0.45, dampingFraction: 0.78)) {
+                    focus += max(-3, min(3, steps))
+                    drag = 0
+                }
+                pausedUntil = .now.addingTimeInterval(6)
+            }
+    }
+
+    private func move(by steps: Int) {
+        guard steps != 0 else { return }
+        withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) { focus += steps }
+        pausedUntil = .now.addingTimeInterval(6)
+    }
+
+    /// Rotates the reel every few seconds, pausing after you touch it.
+    private func autoAdvance(count: Int) async {
+        guard count > 1, !reduceMotion else { return }
+        while !Task.isCancelled {
+            try? await Task.sleep(for: .seconds(3.2))
+            guard !Task.isCancelled else { return }
+            if Date.now >= pausedUntil, drag == 0 {
+                withAnimation(.spring(response: 0.7, dampingFraction: 0.8)) { focus += 1 }
             }
         }
     }
@@ -282,10 +383,12 @@ private struct ReceiptPrinter: View {
                 // The zigzag end slides out last, as if it's just been printed.
                 Image(uiImage: printer).resizable().scaledToFill()
                     .frame(width: 864 * s, height: 96 * s, alignment: .bottom).clipped()
+                    .contentShape(Rectangle())
                     .entrance(.drop, delay: 0.7)
                     .place(0, 286, 864, 96)
                 Image(uiImage: printer).resizable().scaledToFill()
                     .frame(width: 864 * s, height: 286 * s, alignment: .top).clipped()
+                    .contentShape(Rectangle())
                     .place(0, 0, 864, 286)
             } else {
                 drawnPrinter
@@ -297,6 +400,8 @@ private struct ReceiptPrinter: View {
                 .place(100, 208, 661, 75)
         }
         .frame(width: 864 * s, height: 382 * s, alignment: .topLeading)
+        // The whole printer is one big button, and nothing outside it.
+        .contentShape(Rectangle())
     }
 
     /// Fallback if the printer artwork is missing.
@@ -333,12 +438,14 @@ private struct ClubArtboard: View {
                 .entrance(.drop, delay: 0.35)
                 .place(382, 93, 317, 489, rotation: -4)
             StickerView(.navyHearts)
+                .decor()
                 .idle(.bob(6), period: 1.3)
                 .entrance(.pop(spin: -40), delay: 0.55)
                 .place(124, 81, 188, 265)
 
-            BouncyText(text: "plot twist", size: 92, color: .marigold, delay: 0.5).place(57, 593, 966, 111)
+            BouncyText(text: "plot twist", size: 92, color: .marigold, delay: 0.5).decor().place(57, 593, 966, 111)
             DesignText("\(Month.name()) book club", size: 56, serif: true, color: .rose)
+                .decor()
                 .entrance(.rise, delay: 0.85)
                 .place(181, 684, 718, 67)
             NavigationLink(value: Route.club) {
@@ -351,7 +458,7 @@ private struct ClubArtboard: View {
 
             // Red and pink stripes (continued into the next artboard), with a thin strip
             // of torn notebook paper peeking along the top edge, as in the Canva file.
-            StripedPaper(kind: .red, top: 0).place(0, 1158, 1080, 772)
+            StripedPaper(kind: .red, top: 0).decor().place(0, 1158, 1080, 772)
             Artwork(name: "paper-linedPaper", contentMode: .fill, alignment: .bottom) { DrawnLinedStrip() }
                 .entrance(.slide, delay: 0.1)
                 .place(-75, 1007, 1264, 233, rotation: 180)
@@ -372,6 +479,7 @@ private struct ClubArtboard: View {
             .entrance(.fly(x: -240, y: 0), delay: 0.6)
             .place(210, 1763, 660, 98, rotation: -3.3)
             StickerView(.pinkHeart)
+                .decor()
                 .idle(.pulse(1.14), period: 0.45)
                 .entrance(.pop(spin: 45), delay: 0.8)
                 .place(729, 1721, 182, 162, rotation: 17)
@@ -506,8 +614,8 @@ private struct MenuArtboard: View {
                 .idle(.bob(7), period: 1.2)
                 .entrance(.pop(spin: -25), delay: 0.45)
                 .place(334, 612, 432, 307)
-            StickerView(.pinkStar).idle(.spin, period: 7).entrance(.pop(spin: 180), delay: 0.35).place(96, 20, 216, 216)
-            StickerView(.bow).idle(.wobble(10), period: 0.9).entrance(.pop(spin: -60), delay: 0.4).place(732, 274, 167, 139, rotation: 8)
+            StickerView(.pinkStar).decor().idle(.spin, period: 7).entrance(.pop(spin: 180), delay: 0.35).place(96, 20, 216, 216)
+            StickerView(.bow).decor().idle(.wobble(10), period: 0.9).entrance(.pop(spin: -60), delay: 0.4).place(732, 274, 167, 139, rotation: 8)
 
             Button(action: share) {
                 // Her lettering is set very tight (line height 0.67), so each line gets its own short row.
@@ -542,14 +650,16 @@ private struct LibraryArtboard: View {
                 BouncyText(text: "library", size: 177, color: .brick, delay: 0.35)
                     .frame(height: 177 * 0.67 * s)
             }
+            .decor()
             .place(40, 70, 1000, 280)
 
             // Top 8
-            Frame().entrance(.paper, delay: 0.2).place(64, 479, 951, 792)
+            Frame().decor().entrance(.paper, delay: 0.2).place(64, 479, 951, 792)
             ForEach(0..<8, id: \.self) { i in
                 let x: CGFloat = 160 + CGFloat(i % 4) * 196.3
                 let y: CGFloat = i < 4 ? 605 : 890
                 Ellipse().fill(Color.black.opacity(0.28)).blur(radius: 6 * s)
+                    .decor()
                     .entrance(.rise, delay: 0.5 + Double(i) * 0.07)
                     .place(x - 20, y + 228, 215, 40)
                 NavigationLink(value: Route.topEight) {

@@ -33,6 +33,8 @@ protocol Backend: AnyObject {
     // Showcase
     func topEight(userID: UUID) async throws -> [Book?]
     func setTopBook(slot: Int, book: BookCandidate?) async throws
+    /// Saves all eight slots in order (used when they're dragged around).
+    func setTopEight(_ books: [Book?]) async throws
     func badges(userID: UUID) async throws -> [EarnedBadge]
 
     // Book club

@@ -225,6 +225,15 @@ final class SupabaseBackend: Backend {
         try await client.from("top_books").upsert(TopBookRow(user_id: me, slot: slot, book_id: bookID)).execute()
     }
 
+    func setTopEight(_ books: [Book?]) async throws {
+        let me = try uid()
+        let rows = books.prefix(8).enumerated().compactMap { i, book in
+            book.map { TopBookRow(user_id: me, slot: i + 1, book_id: $0.id) }
+        }
+        try await client.from("top_books").delete().eq("user_id", value: me.uuidString).execute()
+        if !rows.isEmpty { try await client.from("top_books").insert(rows).execute() }
+    }
+
     func badges(userID: UUID) async throws -> [EarnedBadge] {
         try await client.from("user_badges")
             .select("badge_code, period, earned_at")

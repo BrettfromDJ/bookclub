@@ -145,6 +145,12 @@ final class AppModel {
         }
     }
 
+    /// Saves a new Top 8 order (shown immediately, saved in the background).
+    func reorderTopEight(_ books: [Book?]) async {
+        topEight = books
+        await perform(haptic: nil) { try await backend.setTopEight(books) }
+    }
+
     /// Moves a TBR book to `index` within the TBR order.
     func moveTBR(from source: IndexSet, to destination: Int) async {
         var order = tbr

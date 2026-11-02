@@ -212,6 +212,9 @@ struct Artwork<Fallback: View>: View {
             // .fill image is larger, so .clipped() crops it to a strip.
             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: alignment)
             .clipped()
+            // Clipping hides the overflow but doesn't stop it catching taps, and these are
+            // decorations anyway: let touches fall through to the buttons underneath.
+            .allowsHitTesting(false)
             .accessibilityHidden(true)
         } else {
             fallback
@@ -231,7 +234,10 @@ struct StripedPaper: View {
     var top: CGFloat = 0
 
     var body: some View {
-        if let image = UIImage(named: kind == .blue ? "texture-stripesBlue" : "texture-stripesRed"), image.size.width > 0 {
+        if kind == .red {
+            // Drawn crisp (the painted red texture looked blurry on device).
+            CrispStripes(top: top).accessibilityHidden(true).allowsHitTesting(false)
+        } else if let image = UIImage(named: "texture-stripesBlue"), image.size.width > 0 {
             GeometryReader { geo in
                 let w = geo.size.width, h = geo.size.height
                 if w > 0, h > 0 {
@@ -256,10 +262,56 @@ struct StripedPaper: View {
                 }
             }
             .accessibilityHidden(true)
+            .allowsHitTesting(false)
         } else {
-            switch kind {
-            case .blue: Stripes(stripe: .powder)
-            case .red: Stripes(base: Color(hex: 0xF4A9B8), stripe: Color(hex: 0xB8321C))
+            Stripes(stripe: .powder).allowsHitTesting(false)
+        }
+    }
+}
+
+/// Her red-and-pink stripes, drawn as sharp shapes in the colors sampled from her
+/// texture. Edges wobble slightly like paint; the wobble depends on the position
+/// down the page (`top` + y), so stripes continue seamlessly into the next section.
+struct CrispStripes: View {
+    var top: CGFloat = 0
+    var red = Color(hex: 0xA42702)
+    var pink = Color(hex: 0xF6B4B5)
+
+    var body: some View {
+        Canvas { ctx, size in
+            guard size.width > 0, size.height > 0 else { return }
+            let s = size.width / Design.width
+            ctx.fill(Path(CGRect(origin: .zero, size: size)), with: .color(pink))
+            // Design-pixel widths measured from her texture.
+            let redWidths: [CGFloat] = [131, 149, 136, 132, 136, 120]
+            let pinkWidths: [CGFloat] = [100, 93, 108, 129, 123, 119]
+            let startY = top * s
+            func wobble(_ stripe: Int, _ edge: Int, _ y: CGFloat) -> CGFloat {
+                let absY = (startY + y) / s
+                return (sin(absY / 95 + CGFloat(stripe * 3 + edge) * 1.7) * 2.2
+                    + sin(absY / 37 + CGFloat(stripe + edge * 5)) * 0.9) * s
+            }
+            var x: CGFloat = -60 * s
+            var i = 0
+            while x < size.width {
+                let w = redWidths[i % redWidths.count] * s
+                var path = Path()
+                let step: CGFloat = 12
+                path.move(to: CGPoint(x: x + wobble(i, 0, 0), y: 0))
+                var y: CGFloat = 0
+                while y < size.height {
+                    y = min(y + step, size.height)
+                    path.addLine(to: CGPoint(x: x + wobble(i, 0, y), y: y))
+                }
+                while y > 0 {
+                    path.addLine(to: CGPoint(x: x + w + wobble(i, 1, y), y: y))
+                    y = max(y - step, 0)
+                }
+                path.addLine(to: CGPoint(x: x + w + wobble(i, 1, 0), y: 0))
+                path.closeSubpath()
+                ctx.fill(path, with: .color(red))
+                x += w + pinkWidths[i % pinkWidths.count] * s
+                i += 1
             }
         }
     }

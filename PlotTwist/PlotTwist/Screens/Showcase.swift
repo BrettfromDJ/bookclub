@@ -1,60 +1,149 @@
 import SwiftUI
+import UniformTypeIdentifiers
 import UIKit
 
-/// Pick the eight books on your showcase shelf.
+/// Your Top 8: tap a spot to pick a book, hold and drag to reorder.
 struct TopEightEditor: View {
     @Environment(AppModel.self) private var model
     @State private var editingSlot: Int?
+    /// Local copy while dragging, so the other covers shuffle out of the way live.
+    @State private var slots: [TopSlot] = []
+    @State private var dragging: TopSlot.ID?
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                ScreenTitle(title: "top 8", subtitle: "tap a spot to pick a favorite")
+                ScreenTitle(title: "top 8", subtitle: "tap to pick · hold & drag to reorder")
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 14), count: 4), spacing: 22) {
-                    ForEach(0..<8, id: \.self) { i in
-                        Button { editingSlot = i + 1 } label: {
-                            VStack(spacing: 6) {
-                                Group {
-                                    if let book = model.topEight[safe: i] ?? nil {
-                                        BookCover(book)
-                                    } else {
-                                        ZStack {
-                                            RoundedRectangle(cornerRadius: 4).fill(Color.butter.opacity(0.7))
-                                            Image(systemName: "plus").font(.title3.bold()).foregroundStyle(Color.brick)
-                                        }
-                                    }
-                                }
-                                .aspectRatio(2 / 3, contentMode: .fit)
-                                .shadow(color: .black.opacity(0.2), radius: 3, y: 3)
-                                .entrance(.flip, delay: Double(i) * 0.06)
-                                Text("\(i + 1)").font(.display(13)).foregroundStyle(Color.marigold)
-                            }
-                        }
-                        .buttonStyle(.squish)
-                        .contextMenu {
-                            if model.topEight[safe: i] ?? nil != nil {
-                                Button("Remove", systemImage: "xmark", role: .destructive) {
-                                    Task { await model.perform(haptic: nil) { try await model.backend.setTopBook(slot: i + 1, book: nil) } }
-                                }
-                            }
-                        }
+                    ForEach(Array(slots.enumerated()), id: \.element.id) { i, slot in
+                        cell(slot, index: i)
                     }
                 }
                 .padding(18)
                 .background(RoundedRectangle(cornerRadius: 24).fill(Color.cream))
                 .overlay(RoundedRectangle(cornerRadius: 20).strokeBorder(Color.brick, lineWidth: 1.5).padding(8))
-                Text("long-press a book to remove it").font(.display(12, weight: .semiBold)).foregroundStyle(.secondary)
+                .animation(.spring(response: 0.35, dampingFraction: 0.72), value: slots.map(\.id))
+                .sensoryFeedback(.selection, trigger: slots.map(\.id))
+                Text("hold a book to remove it, or drag it to a new spot").font(.display(12, weight: .semiBold)).foregroundStyle(.secondary)
             }
             .padding(20)
+            // Letting go anywhere on the screen (not just on a spot) still finishes the drag.
+            .onDrop(of: [.text], isTargeted: nil) { _ in
+                guard dragging != nil else { return false }
+                dragging = nil
+                commit()
+                return true
+            }
         }
         .scrapbookScreen()
         .revealsOnAppear()
+        .onAppear(perform: syncFromModel)
+        .onChange(of: model.topEight) { _, _ in if dragging == nil { syncFromModel() } }
         .sheet(item: Binding(get: { editingSlot.map(SlotID.init) }, set: { editingSlot = $0?.slot })) { slot in
             TopPickSheet(slot: slot.slot)
         }
     }
 
+    private func cell(_ slot: TopSlot, index i: Int) -> some View {
+        Button {
+            dragging = nil
+            editingSlot = i + 1
+        } label: {
+            VStack(spacing: 6) {
+                Group {
+                    if let book = slot.book {
+                        BookCover(book)
+                    } else {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 4).fill(Color.butter.opacity(0.7))
+                            Image(systemName: "plus").font(.title3.bold()).foregroundStyle(Color.brick)
+                        }
+                    }
+                }
+                .aspectRatio(2 / 3, contentMode: .fit)
+                .shadow(color: .black.opacity(dragging == slot.id ? 0 : 0.2), radius: 3, y: 3)
+                .entrance(.flip, delay: Double(i) * 0.06)
+                Text("\(i + 1)").font(.display(13)).foregroundStyle(Color.marigold)
+            }
+            // The spot being dragged fades while its copy follows your finger.
+            .opacity(dragging == slot.id ? 0.25 : 1)
+            .scaleEffect(dragging == slot.id ? 0.92 : 1)
+        }
+        .buttonStyle(.squish)
+        .onDrag {
+            dragging = slot.id
+            return NSItemProvider(object: slot.id.uuidString as NSString)
+        } preview: {
+            Group {
+                if let book = slot.book { BookCover(book) } else { RoundedRectangle(cornerRadius: 4).fill(Color.butter) }
+            }
+            .frame(width: 80, height: 120)
+            .rotationEffect(.degrees(-4))
+        }
+        .onDrop(of: [.text], delegate: ReorderDrop(target: slot, slots: $slots, dragging: $dragging, commit: commit))
+        .contextMenu {
+            if slot.book != nil {
+                Button("Remove", systemImage: "xmark", role: .destructive) {
+                    var books = slots.map(\.book)
+                    books[i] = nil
+                    Task { await model.reorderTopEight(books) }
+                }
+            }
+        }
+    }
+
+    private func syncFromModel() {
+        let books = (0..<8).map { model.topEight[safe: $0] ?? nil }
+        // Keep each book's identity so SwiftUI can animate moves.
+        slots = books.enumerated().map { i, book in
+            if let existing = slots.first(where: { $0.book?.id != nil && $0.book?.id == book?.id }) { return existing }
+            return TopSlot(book: book, fallbackIndex: i)
+        }
+    }
+
+    private func commit() {
+        let books = slots.map(\.book)
+        Task { await model.reorderTopEight(books) }
+    }
+
     private struct SlotID: Identifiable { let slot: Int; var id: Int { slot } }
+}
+
+/// One spot in the Top 8 grid. Filled spots are identified by their book, empty
+/// ones by a fresh id, so the grid animates as things move around.
+struct TopSlot: Identifiable, Equatable {
+    let id: String
+    var book: Book?
+
+    init(book: Book?, fallbackIndex: Int) {
+        self.book = book
+        id = book.map { $0.id.uuidString } ?? "empty-\(fallbackIndex)-\(UUID().uuidString)"
+    }
+}
+
+/// Live reordering: as the dragged book passes over a spot, it moves there.
+private struct ReorderDrop: DropDelegate {
+    let target: TopSlot
+    @Binding var slots: [TopSlot]
+    @Binding var dragging: TopSlot.ID?
+    let commit: () -> Void
+
+    func dropEntered(info: DropInfo) {
+        guard let dragging, dragging != target.id,
+              let from = slots.firstIndex(where: { $0.id == dragging }),
+              let to = slots.firstIndex(where: { $0.id == target.id }) else { return }
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.72)) {
+            slots.move(fromOffsets: IndexSet(integer: from), toOffset: to > from ? to + 1 : to)
+        }
+    }
+
+    func dropUpdated(info: DropInfo) -> DropProposal? { DropProposal(operation: .move) }
+
+    func performDrop(info: DropInfo) -> Bool {
+        dragging = nil
+        commit()
+        return true
+    }
 }
 
 private struct TopPickSheet: View {

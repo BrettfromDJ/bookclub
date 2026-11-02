@@ -13,6 +13,8 @@ struct BookCover: View {
     var body: some View {
         RemoteImage(url: url.flatMap(URL.init(string:))) { placeholder }
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+            // A filled cover can overflow its frame; only the visible cover should be tappable.
+            .contentShape(RoundedRectangle(cornerRadius: cornerRadius))
         .accessibilityLabel(author.isEmpty ? title : "\(title) by \(author)")
     }
 
@@ -86,6 +88,7 @@ struct ArtboardPill: View {
                 .minimumScaleFactor(0.5)
                 .padding(.horizontal, 20 * s)
         }
+        .contentShape(Capsule())
     }
 }
 
@@ -106,6 +109,7 @@ struct Avatar: View {
         }
         .frame(width: size, height: size)
         .clipShape(Circle())
+        .contentShape(Circle())
         .overlay(Circle().stroke(Color.cream, lineWidth: 2))
     }
 }
