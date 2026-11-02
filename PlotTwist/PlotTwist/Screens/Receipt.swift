@@ -63,7 +63,7 @@ struct ReceiptCard: View {
 
     var body: some View {
         VStack(spacing: 10) {
-            Text("plot twist").font(.display(26)).tracking(-1.5).foregroundStyle(Color.marigold)
+            Text("plot twist").font(.display(26)).tracking(-0.5).foregroundStyle(Color.marigold)
             Text("\(receipt.monthName) reading receipt").font(.serif(19)).foregroundStyle(Color.rose)
             Text("reader: \(receipt.reader)").font(.system(size: 12, design: .monospaced))
             dashes

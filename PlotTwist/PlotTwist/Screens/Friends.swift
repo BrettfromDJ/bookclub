@@ -213,7 +213,7 @@ struct ReaderView: View {
                     HStack(spacing: 14) {
                         Avatar(url: profile.avatarURL, name: profile.shortName, size: 72)
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("\(profile.possessive) library").font(.display(28)).tracking(-1.2).foregroundStyle(Color.brick)
+                            Text("\(profile.possessive) library").font(.display(28)).tracking(-0.4).foregroundStyle(Color.brick)
                             Text("@\(profile.username)").font(.display(13, weight: .semiBold)).foregroundStyle(Color.rose)
                         }
                     }

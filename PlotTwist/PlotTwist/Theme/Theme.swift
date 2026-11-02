@@ -99,14 +99,23 @@ extension View {
 }
 
 /// One of her artboards: a fixed-height design-coordinate canvas.
+/// Its pieces animate onto the page each time it scrolls into view.
 struct Artboard<Content: View>: View {
     @Environment(\.designScale) private var s
+    @State private var revealed = false
     let height: CGFloat
     @ViewBuilder var content: Content
 
     var body: some View {
         ZStack(alignment: .topLeading) { content }
             .frame(width: Design.width * s, height: height * s, alignment: .topLeading)
+            .environment(\.revealed, revealed)
+            .task {
+                // Let the "before" state render for a frame so the entrance actually plays.
+                try? await Task.sleep(for: .milliseconds(80))
+                revealed = true
+            }
+            .onDisappear { revealed = false }
     }
 }
 
@@ -121,10 +130,13 @@ struct DesignText: View {
     var color: Color = .brick
     var alignment: TextAlignment = .center
     var tracking: CGFloat = 0
-    var lineSpacing: CGFloat = 0
+    /// Canva line height (a multiple of the font size). When set, the text is
+    /// broken at "\n" and each line gets exactly this height, so tight leading
+    /// like her 0.67 headings comes out right.
+    var lineHeight: CGFloat?
 
     init(_ text: String, size: CGFloat, serif: Bool = false, italic: Bool = false, weight: Font.DisplayWeight = .extraBold,
-         color: Color = .brick, alignment: TextAlignment = .center, tracking: CGFloat = 0, lineSpacing: CGFloat = 0) {
+         color: Color = .brick, alignment: TextAlignment = .center, tracking: CGFloat = 0, lineHeight: CGFloat? = nil) {
         self.text = text
         self.size = size
         self.serif = serif
@@ -133,18 +145,44 @@ struct DesignText: View {
         self.color = color
         self.alignment = alignment
         self.tracking = tracking
-        self.lineSpacing = lineSpacing
+        self.lineHeight = lineHeight
     }
 
+    private var font: Font { serif ? .serif(size * s, italic: italic) : .display(size * s, weight: weight) }
+
     var body: some View {
-        Text(text)
-            .font(serif ? .serif(size * s, italic: italic) : .display(size * s, weight: weight))
-            .tracking(tracking * size * s)
-            .lineSpacing(lineSpacing * s)
-            .foregroundStyle(color)
-            .multilineTextAlignment(alignment)
-            .minimumScaleFactor(0.5)
+        if let lineHeight {
+            VStack(alignment: stackAlignment, spacing: 0) {
+                ForEach(Array(text.components(separatedBy: "\n").enumerated()), id: \.offset) { _, line in
+                    Text(line)
+                        .font(font)
+                        .tracking(tracking * size * s)
+                        .foregroundStyle(color)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(height: lineHeight * size * s)
+                }
+            }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: frameAlignment)
+            .accessibilityElement(children: .combine)
+        } else {
+            Text(text)
+                .font(font)
+                .tracking(tracking * size * s)
+                .foregroundStyle(color)
+                .multilineTextAlignment(alignment)
+                .minimumScaleFactor(0.5)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: frameAlignment)
+        }
+    }
+
+    private var stackAlignment: HorizontalAlignment {
+        switch alignment {
+        case .leading: .leading
+        case .trailing: .trailing
+        default: .center
+        }
     }
 
     private var frameAlignment: Alignment {

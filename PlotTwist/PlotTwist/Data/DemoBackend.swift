@@ -107,8 +107,6 @@ final class DemoBackend: Backend {
 
     private var myProfile: Profile { profiles.first { $0.id == me }! }
 
-    private func pause() async { try? await Task.sleep(for: .milliseconds(150)) }
-
     // MARK: Auth
 
     func restoreSession() async -> UUID? { me }
@@ -150,7 +148,6 @@ final class DemoBackend: Backend {
     // MARK: Shelves
 
     func shelf(userID: UUID) async throws -> [UserBook] {
-        await pause()
         return userID == me ? shelfRows.sorted { $0.position < $1.position } : []
     }
 

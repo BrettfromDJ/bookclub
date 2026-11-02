@@ -27,6 +27,9 @@ struct ClubChatView: View {
                         ForEach(messages) { message in
                             Bubble(message: message, mine: message.userID == model.me?.id)
                                 .id(message.id)
+                                .transition(.asymmetric(insertion: .scale(scale: 0.6, anchor: message.userID == model.me?.id ? .bottomTrailing : .bottomLeading)
+                                                            .combined(with: .opacity),
+                                                        removal: .opacity))
                                 .contextMenu {
                                     if message.userID == model.me?.id {
                                         Button("Delete", systemImage: "trash", role: .destructive) { Task { await delete(message) } }
@@ -47,6 +50,8 @@ struct ClubChatView: View {
             composer
         }
         .scrapbookScreen(stripe: .blush)
+        .revealsOnAppear()
+        .animation(.spring(response: 0.35, dampingFraction: 0.7), value: messages)
         .task {
             // Simple polling keeps the chat fresh while it's open.
             while !Task.isCancelled {
@@ -66,6 +71,8 @@ struct ClubChatView: View {
                     .frame(width: 120, height: 180)
                     .rotationEffect(.degrees(-4))
                     .shadow(color: .black.opacity(0.25), radius: 6, y: 5)
+                    .idle(.wobble(2), period: 2.4)
+                    .entrance(.drop)
                     .overlay(alignment: .topLeading) { StickerView(.navyHearts).frame(width: 50, height: 70).offset(x: -40, y: -10) }
                 Text("\(Month.name()) book club").font(.serif(24)).foregroundStyle(Color.rose)
                 Text(club.book.title).font(.display(20)).multilineTextAlignment(.center).foregroundStyle(Color.brick)

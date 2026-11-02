@@ -27,8 +27,12 @@ struct LoginView: View {
                         .padding(26)
                         .background(RoundedRectangle(cornerRadius: 26).fill(Color.cream))
                         .overlay(RoundedRectangle(cornerRadius: 22).strokeBorder(Color.brick, style: StrokeStyle(lineWidth: 1.5, dash: [6, 4])).padding(6))
-                        StickerView(.daisies).frame(width: 90, height: 66).offset(x: 14, y: -30)
+                        StickerView(.daisies).frame(width: 90, height: 66)
+                            .idle(.wobble(7), period: 1.6)
+                            .entrance(.pop(spin: -120), delay: 0.4)
+                            .offset(x: 14, y: -30)
                     }
+                    .entrance(.drop)
                     .padding(.top, 60)
 
                     PaperCard(dashed: false) {
@@ -78,6 +82,7 @@ struct LoginView: View {
             }
             .scrollDismissesKeyboard(.interactively)
         }
+        .revealsOnAppear()
         .onAppear { focus = .email }
     }
 

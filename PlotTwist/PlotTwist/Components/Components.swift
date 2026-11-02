@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 // Building blocks in her scrapbook style, shared across screens.
 
@@ -10,14 +11,8 @@ struct BookCover: View {
     var cornerRadius: CGFloat = 3
 
     var body: some View {
-        AsyncImage(url: url.flatMap(URL.init(string:)), transaction: Transaction(animation: .easeIn(duration: 0.2))) { phase in
-            if case .success(let image) = phase {
-                image.resizable().scaledToFill()
-            } else {
-                placeholder
-            }
-        }
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+        RemoteImage(url: url.flatMap(URL.init(string:))) { placeholder }
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .accessibilityLabel(author.isEmpty ? title : "\(title) by \(author)")
     }
 
@@ -85,7 +80,7 @@ struct ArtboardPill: View {
             Capsule().fill(fill)
             Text(title)
                 .font(.display(fontSize * s))
-                .tracking(-0.078 * fontSize * s)
+                .tracking(-0.015 * fontSize * s)
                 .foregroundStyle(text)
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
@@ -101,16 +96,12 @@ struct Avatar: View {
     var size: CGFloat = 40
 
     var body: some View {
-        AsyncImage(url: url.flatMap(URL.init(string:))) { phase in
-            if case .success(let image) = phase {
-                image.resizable().scaledToFill()
-            } else {
-                ZStack {
-                    Color.blush
-                    Text(String(name.prefix(1)).lowercased())
-                        .font(.serif(size * 0.5))
-                        .foregroundStyle(Color.brick)
-                }
+        RemoteImage(url: url.flatMap(URL.init(string:))) {
+            ZStack {
+                Color.blush
+                Text(String(name.prefix(1)).lowercased())
+                    .font(.serif(size * 0.5))
+                    .foregroundStyle(Color.brick)
             }
         }
         .frame(width: size, height: size)
@@ -173,7 +164,7 @@ struct ScreenTitle: View {
         VStack(alignment: .leading, spacing: 2) {
             Text(title)
                 .font(.display(34))
-                .tracking(-1.5)
+                .tracking(-0.5)
                 .foregroundStyle(Color.brick)
             if let subtitle {
                 Text(subtitle)
@@ -215,8 +206,10 @@ struct BrickButtonStyle: ButtonStyle {
             .padding(.vertical, 14)
             .frame(maxWidth: .infinity)
             .background(Capsule().fill(fill))
-            .opacity(configuration.isPressed ? 0.8 : 1)
-            .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .opacity(configuration.isPressed ? 0.85 : 1)
+            .scaleEffect(configuration.isPressed ? 0.95 : 1)
+            .animation(.spring(response: 0.18, dampingFraction: 0.55), value: configuration.isPressed)
+            .sensoryFeedback(.impact(weight: .medium, intensity: 0.7), trigger: configuration.isPressed) { _, pressed in pressed }
     }
 }
 
@@ -224,11 +217,63 @@ struct BrickButtonStyle: ButtonStyle {
 struct SquishButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed ? 0.95 : 1)
-            .animation(.spring(duration: 0.25), value: configuration.isPressed)
+            .scaleEffect(configuration.isPressed ? 0.9 : 1)
+            .rotationEffect(.degrees(configuration.isPressed ? -2 : 0))
+            .brightness(configuration.isPressed ? -0.04 : 0)
+            .animation(.spring(response: 0.18, dampingFraction: 0.5), value: configuration.isPressed)
+            // A light tick the instant a finger lands, so taps feel immediate.
+            .sensoryFeedback(.impact(weight: .light, intensity: 0.6), trigger: configuration.isPressed) { _, pressed in pressed }
     }
 }
 
 extension ButtonStyle where Self == SquishButtonStyle {
     static var squish: SquishButtonStyle { SquishButtonStyle() }
+}
+
+/// Keeps decoded cover and avatar images in memory, so they show instantly
+/// when a screen is reopened instead of loading again.
+enum ImageMemory {
+    static let cache: NSCache<NSURL, UIImage> = {
+        let c = NSCache<NSURL, UIImage>()
+        c.countLimit = 300
+        return c
+    }()
+}
+
+/// A remote image (book cover, profile photo) that's cached in memory and decoded off the main thread.
+struct RemoteImage<Placeholder: View>: View {
+    let url: URL?
+    @ViewBuilder var placeholder: Placeholder
+    @State private var image: UIImage?
+
+    init(url: URL?, @ViewBuilder placeholder: () -> Placeholder) {
+        self.url = url
+        self.placeholder = placeholder()
+        // Already loaded once? Show it on the very first frame.
+        _image = State(initialValue: url.flatMap { ImageMemory.cache.object(forKey: $0 as NSURL) })
+    }
+
+    var body: some View {
+        ZStack {
+            if let image {
+                Image(uiImage: image).resizable().scaledToFill().transition(.opacity)
+            } else {
+                placeholder
+            }
+        }
+        .task(id: url) { await load() }
+    }
+
+    private func load() async {
+        guard let url else { image = nil; return }
+        if let cached = ImageMemory.cache.object(forKey: url as NSURL) { image = cached; return }
+        guard let (data, response) = try? await URLSession.shared.data(from: url),
+              (response as? HTTPURLResponse)?.statusCode ?? 200 < 400,
+              let decoded = UIImage(data: data) else { return }
+        let ready = await decoded.byPreparingForDisplay() ?? decoded
+        // Google sometimes returns a tiny "no cover" image; treat it as missing.
+        guard ready.size.width > 2 else { return }
+        ImageMemory.cache.setObject(ready, forKey: url as NSURL)
+        withAnimation(.easeOut(duration: 0.2)) { image = ready }
+    }
 }

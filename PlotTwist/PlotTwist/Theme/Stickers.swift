@@ -208,7 +208,9 @@ struct Artwork<Fallback: View>: View {
                     Image(uiImage: image).resizable()
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: alignment)
+            // minWidth/minHeight 0 make the frame take the placed size even when a
+            // .fill image is larger, so .clipped() crops it to a strip.
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: alignment)
             .clipped()
             .accessibilityHidden(true)
         } else {
@@ -217,31 +219,41 @@ struct Artwork<Fallback: View>: View {
     }
 }
 
-/// Her painted striped paper, repeated down the artboard.
+/// Her painted striped paper.
+///
+/// The stripes are one continuous sheet running down the whole scroll: `top` is
+/// how far down that sheet (in design pixels) this piece starts, so a band that
+/// continues in the next artboard lines up exactly. The image repeats with every
+/// other copy flipped, which makes the joins seamless.
 struct StripedPaper: View {
     enum Kind { case blue, red }
     var kind: Kind = .blue
+    var top: CGFloat = 0
 
     var body: some View {
-        if let image = UIImage(named: kind == .blue ? "texture-stripesBlue" : "texture-stripesRed") {
+        if let image = UIImage(named: kind == .blue ? "texture-stripesBlue" : "texture-stripesRed"), image.size.width > 0 {
             GeometryReader { geo in
-                // In the Canva file the stripe image is ~26% wider than the artboard.
-                let tileWidth = geo.size.width * 1.26
-                let tileHeight = image.size.width > 0 ? tileWidth * image.size.height / image.size.width : 0
-                // SwiftUI can lay this out at zero size first; dividing by zero there would crash.
-                let ratio = tileHeight > 0 ? geo.size.height / tileHeight : 0
-                let count = ratio.isFinite ? min(max(Int(ratio.rounded(.up)), 1), 20) : 1
-                VStack(spacing: 0) {
-                    ForEach(0..<count, id: \.self) { i in
-                        Image(uiImage: image)
-                            .resizable()
-                            .frame(width: tileWidth, height: tileHeight)
-                            // Flip every other tile so the seams line up.
-                            .scaleEffect(x: 1, y: i.isMultiple(of: 2) ? 1 : -1)
+                let w = geo.size.width, h = geo.size.height
+                if w > 0, h > 0 {
+                    let s = w / Design.width
+                    // In the Canva file the stripe image is ~26% wider than the artboard.
+                    let tileW = w * 1.26
+                    let tileH = tileW * image.size.height / image.size.width
+                    let start = top * s
+                    let first = Int((start / tileH).rounded(.down))
+                    let last = Int(((start + h) / tileH).rounded(.down))
+                    ZStack(alignment: .topLeading) {
+                        ForEach(first...max(first, min(last, first + 12)), id: \.self) { i in
+                            Image(uiImage: image)
+                                .resizable()
+                                .frame(width: tileW, height: tileH)
+                                .scaleEffect(x: 1, y: i.isMultiple(of: 2) ? 1 : -1)
+                                .offset(x: (w - tileW) / 2, y: CGFloat(i) * tileH - start)
+                        }
                     }
+                    .frame(width: w, height: h, alignment: .topLeading)
+                    .clipped()
                 }
-                .frame(width: geo.size.width, height: geo.size.height, alignment: .top)
-                .clipped()
             }
             .accessibilityHidden(true)
         } else {

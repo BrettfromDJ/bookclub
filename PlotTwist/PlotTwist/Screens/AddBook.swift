@@ -116,6 +116,8 @@ struct AddConfirmView: View {
                     .frame(width: 160, height: 240)
                     .rotationEffect(.degrees(-3))
                     .shadow(color: .black.opacity(0.25), radius: 8, y: 6)
+                    .idle(.bob(4), period: 2.2)
+                    .entrance(.drop)
                     .padding(.top, 12)
                 VStack(spacing: 4) {
                     Text(book.title).font(.serif(28)).multilineTextAlignment(.center).foregroundStyle(Color.brick)
@@ -151,6 +153,7 @@ struct AddConfirmView: View {
         }
         .background(Color.cream.ignoresSafeArea())
         .navigationBarTitleDisplayMode(.inline)
+        .revealsOnAppear()
         .onAppear { status = defaultStatus }
     }
 }

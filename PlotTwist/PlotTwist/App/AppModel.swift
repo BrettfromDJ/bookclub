@@ -109,12 +109,14 @@ final class AppModel {
                  _ work: () async throws -> Void) async -> Bool {
         do {
             try await work()
-            await refresh()
+            // Celebrate right away; the refresh finishes in the background.
             if let haptic { UINotificationFeedbackGenerator().notificationOccurred(haptic) }
             if let success { message = success }
+            await refresh()
             return true
         } catch {
             show(error)
+            await refresh()
             return false
         }
     }
@@ -130,9 +132,16 @@ final class AppModel {
 
     func setStatus(_ book: UserBook, _ status: ShelfStatus) async {
         let before = punchCard
-        await perform(status == .read ? "Punched your card!" : nil) { try await backend.setStatus(book.id, status) }
-        if status == .read, punchCard.completedCards > before.completedCards {
-            message = "You filled a punch card! 🎉"
+        // Move the book on screen immediately (and punch the card) before the save finishes.
+        if let i = shelf.firstIndex(where: { $0.id == book.id }) {
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                shelf[i].status = status
+                shelf[i].finishedAt = status == .read ? Month.today() : nil
+            }
+        }
+        let filledCard = status == .read && punchCard.completedCards > before.completedCards
+        await perform(filledCard ? "You filled a punch card! 🎉" : (status == .read ? "Punched your card!" : nil)) {
+            try await backend.setStatus(book.id, status)
         }
     }
 

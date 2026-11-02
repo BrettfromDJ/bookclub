@@ -6,7 +6,7 @@ struct PlotTwistApp: App {
     @State private var model = AppModel()
 
     init() {
-        // Book covers load through AsyncImage, which uses the shared URL cache.
+        // Book covers are fetched with URLSession, which uses this shared disk cache.
         URLCache.shared = URLCache(memoryCapacity: 50 * 1024 * 1024, diskCapacity: 300 * 1024 * 1024)
     }
 
@@ -46,7 +46,10 @@ private struct Splash: View {
         ZStack {
             Color.cream.ignoresSafeArea()
             Wordmark(size: 56)
+                .idle(.wobble(4), period: 0.7)
+                .entrance(.pop(spin: -30))
         }
+        .revealsOnAppear()
     }
 }
 
@@ -63,7 +66,7 @@ struct Wordmark: View {
         } else {
             Text("plot twist")
                 .font(.display(size))
-                .tracking(-0.078 * size)
+                .tracking(-0.02 * size)
                 .foregroundStyle(Color.marigold)
         }
     }

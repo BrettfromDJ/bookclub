@@ -155,7 +155,14 @@ struct BookDetailView: View {
                         .frame(width: 180, height: 270)
                         .rotationEffect(.degrees(4))
                         .shadow(color: .black.opacity(0.25), radius: 8, y: 6)
-                        .overlay(alignment: .topTrailing) { StickerView(.daisies).frame(width: 80, height: 60).offset(x: 30, y: -30) }
+                        .overlay(alignment: .topTrailing) {
+                            StickerView(.daisies).frame(width: 80, height: 60)
+                                .idle(.wobble(7), period: 1.6)
+                                .entrance(.pop(spin: -120), delay: 0.35)
+                                .offset(x: 30, y: -30)
+                        }
+                        .idle(.bob(4), period: 2.2)
+                        .entrance(.drop)
                         .padding(.top, 20)
                     VStack(spacing: 4) {
                         Text(row.book.title).font(.serif(30)).multilineTextAlignment(.center).foregroundStyle(Color.brick)
@@ -203,6 +210,7 @@ struct BookDetailView: View {
             }
         }
         .scrapbookScreen()
+        .revealsOnAppear()
     }
 }
 

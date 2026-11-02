@@ -26,6 +26,7 @@ struct TopEightEditor: View {
                                 }
                                 .aspectRatio(2 / 3, contentMode: .fit)
                                 .shadow(color: .black.opacity(0.2), radius: 3, y: 3)
+                                .entrance(.flip, delay: Double(i) * 0.06)
                                 Text("\(i + 1)").font(.display(13)).foregroundStyle(Color.marigold)
                             }
                         }
@@ -47,6 +48,7 @@ struct TopEightEditor: View {
             .padding(20)
         }
         .scrapbookScreen()
+        .revealsOnAppear()
         .sheet(item: Binding(get: { editingSlot.map(SlotID.init) }, set: { editingSlot = $0?.slot })) { slot in
             TopPickSheet(slot: slot.slot)
         }
@@ -112,6 +114,8 @@ struct BadgeBookView: View {
                             VStack(spacing: 6) {
                                 BadgePatch(badge: badge, earned: earned)
                                     .frame(width: 88, height: 88)
+                                    .idle(.wobble(earned ? 4 : 0), period: 1.5)
+                                    .entrance(.pop(spin: earned ? 200 : 0), delay: Double(Badges.all.firstIndex(of: badge) ?? 0) * 0.04)
                                 Text(badge.name.lowercased())
                                     .font(.display(12, weight: .bold))
                                     .foregroundStyle(earned ? Color.brick : Color.brick.opacity(0.45))
@@ -130,6 +134,7 @@ struct BadgeBookView: View {
             .padding(20)
         }
         .scrapbookScreen()
+        .revealsOnAppear()
         .alert(selected?.name ?? "", isPresented: Binding(get: { selected != nil }, set: { if !$0 { selected = nil } })) {
             Button("OK", role: .cancel) {}
         } message: {
@@ -159,6 +164,7 @@ struct ShareCardSheet: View {
                     .frame(width: 300, height: 533)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                     .shadow(color: .black.opacity(0.2), radius: 10, y: 6)
+                    .entrance(.paper)
                 if let image {
                     ShareLink(item: Image(uiImage: image), preview: SharePreview("my plot twist", image: Image(uiImage: image))) {
                         Label("share", systemImage: "square.and.arrow.up")
@@ -171,6 +177,7 @@ struct ShareCardSheet: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(StripedBackground(stripe: .powder))
             .toolbar { ToolbarItem(placement: .cancellationAction) { Button("close") { dismiss() } } }
+            .revealsOnAppear()
         }
         .task {
             // Let cover images load before snapshotting.
@@ -189,11 +196,11 @@ struct ShareCardSheet: View {
         image = renderer.uiImage
     }
 
-    /// ImageRenderer can't wait for AsyncImage, so fetch the cover from the URL cache directly.
+    /// ImageRenderer can't wait for images to load, so use the already-loaded cover.
     private var coverSnapshot: UIImage? {
-        guard let s = model.currentlyReading.first?.book.coverURL, let url = URL(string: s),
-              let cached = URLCache.shared.cachedResponse(for: URLRequest(url: url)) else { return nil }
-        return UIImage(data: cached.data)
+        guard let s = model.currentlyReading.first?.book.coverURL, let url = URL(string: s) else { return nil }
+        if let loaded = ImageMemory.cache.object(forKey: url as NSURL) { return loaded }
+        return URLCache.shared.cachedResponse(for: URLRequest(url: url)).flatMap { UIImage(data: $0.data) }
     }
 }
 
@@ -210,7 +217,7 @@ private struct ShareCard: View {
         ZStack {
             Stripes(stripe: .powder)
             VStack(spacing: 16) {
-                Text("plot twist").font(.display(40)).tracking(-3).foregroundStyle(Color.marigold)
+                Text("plot twist").font(.display(40)).tracking(-0.8).foregroundStyle(Color.marigold)
                 Text("\(me?.possessive ?? "my") current read").font(.serif(22)).foregroundStyle(Color.rose)
                 Group {
                     if let coverImage {
