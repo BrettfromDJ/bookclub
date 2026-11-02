@@ -153,7 +153,7 @@ private struct FeedCard: View {
                 }
                 if let code = item.badgeCode, let badge = Badges.info(code) {
                     HStack(spacing: 12) {
-                        PatchView(symbol: badge.symbol, fill: badge.fill, border: badge.border).frame(width: 64, height: 64)
+                        BadgePatch(badge: badge).frame(width: 64, height: 64)
                         VStack(alignment: .leading) {
                             Text(badge.name).font(.serif(19)).foregroundStyle(Color.brick)
                             Text(badge.description.lowercased()).font(.display(12, weight: .semiBold)).foregroundStyle(Color.rose)
@@ -240,7 +240,7 @@ struct ReaderView: View {
                     Pill(title: "badges", fill: .blush, text: .brick, size: 18).rotationEffect(.degrees(-5))
                     let badges = Array(Set(earned.map(\.badgeCode))).compactMap(Badges.info).sorted { $0.name < $1.name }
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 12) {
-                        ForEach(badges) { b in PatchView(symbol: b.symbol, fill: b.fill, border: b.border).frame(height: 72) }
+                        ForEach(badges) { b in BadgePatch(badge: b).frame(height: 72) }
                     }
                     .padding(16)
                     .background(RoundedRectangle(cornerRadius: 22).fill(Color.cream))

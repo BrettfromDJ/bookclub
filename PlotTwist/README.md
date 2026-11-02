@@ -32,17 +32,22 @@ With no keys set, the app opens in **demo mode** with sample data, so you can cl
 2. The bundle ID is `co.designjoy.plottwist`, set in `Config/PlotTwist.xcconfig`. Change it before your first App Store upload, because it can't change afterwards.
 3. Product → Archive → Distribute to upload to TestFlight.
 
-## Swapping in the real Canva artwork
+## Canva artwork
 
-The stickers and textures (daisies, binder clip, patches, stars, washi tape…) are drawn in code to match the design. To use the exact Canva art instead:
+Her actual Canva artwork is in `PlotTwist/Resources/Assets.xcassets`, exported from Canva as transparent PNGs:
 
-1. In Canva, select a sticker → Download as a **transparent PNG**.
-2. Drag it into `PlotTwist/Resources/Assets.xcassets` and name it `sticker-<name>`, using one of the names in `Theme/Stickers.swift`, for example `sticker-daisies`, `sticker-binderClip` or `sticker-paperPlane`.
-3. Run again. The image replaces the drawn version automatically.
+- **Canva Stickers**: daisies, binder clip, stars, smiley, hearts, bow, paper plane, arrow, washi tape, speech bubble, the scalloped "10 more!" badge, punch-card holes, and the embroidered patches used for badges.
+- **Canva Papers**: ripped watercolor paper, the layered torn note, torn notebook paper, and the receipt printer.
+- **Canva Textures**: the blue and red/pink striped papers.
+- **Canva Logos**: all three logo options with transparent backgrounds. The app uses `logo-chunky` as its wordmark.
 
-Check Canva's content license before shipping Canva stock elements inside an app. Using them as standalone app UI assets isn't always allowed. Artwork your sister drew herself is fine.
+The app icon is the "pt" monogram logo. To use a different one, replace `AppIcon.appiconset/AppIcon.png` with a 1024×1024 PNG.
 
-**App icon:** `Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png` is a placeholder based on the "pt" monogram logo option. Replace it with a 1024×1024 PNG export of whichever logo you pick.
+If she updates a sticker, re-export it from Canva as a transparent PNG and drop it over the matching image (for example `sticker-daisies`). Every sticker also has a drawn version in `Theme/Stickers.swift`, used only if its image goes missing.
+
+The assets were exported through a scratch copy in her Canva named "Plot Twist – app sticker export (scratch copy)", with each piece laid out on its own. The original design wasn't changed. You can delete the copy whenever you like.
+
+**Licensing:** most of these are Canva stock elements (Free or Pro). Canva's content license limits using elements on their own, outside a design, so check it before publishing to the App Store. The safest options are her own drawings or elements she has rights to.
 
 **Fonts:** Poppins and DM Serif Display, both free under the OFL, stand in for the Canva fonts. If you know the exact Canva fonts and they're licensed for apps, add the .ttf files to `Resources/Fonts`, list them in `Config/Info.plist` under `UIAppFonts`, and update `Theme/Theme.swift`.
 
@@ -52,7 +57,7 @@ Check Canva's content license before shipping Canva stock elements inside an app
 | --- | --- |
 | Home scroll (the Canva artboards) | `Screens/Home/HomeView.swift` |
 | Colors, fonts, design-coordinate layout | `Theme/Theme.swift` |
-| Hand-drawn shapes and stickers | `Theme/Shapes.swift`, `Theme/Stickers.swift` |
+| Stickers, patches, artwork helpers (plus drawn fallbacks) | `Theme/Stickers.swift`, `Theme/Shapes.swift` |
 | Supabase reads and writes | `Data/SupabaseBackend.swift` |
 | Demo-mode sample data | `Data/DemoBackend.swift` |
 | Punch card, badges, receipt logic | `Model/Logic.swift` |

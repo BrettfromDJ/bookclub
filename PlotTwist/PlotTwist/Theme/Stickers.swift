@@ -1,14 +1,15 @@
 import SwiftUI
 import UIKit
 
-/// The scrapbook stickers from her Canva file, drawn in code.
+/// The scrapbook stickers from her Canva file.
 ///
-/// To use the real artwork instead, export a sticker from Canva as a transparent
-/// PNG and add it to Assets.xcassets named `sticker-<case name>`
-/// (for example `sticker-daisies`). The image then replaces the drawn version.
+/// The real artwork lives in Assets.xcassets as `sticker-<case name>`
+/// (exported from Canva as transparent PNGs). Each case also has a drawn
+/// fallback, used if an image is missing.
 enum Sticker: String, CaseIterable {
     case goldStar, redBurst, smiley, daisies, pinkHeart, navyHearts, pinkStar, bow
     case paperPlane, arrow, binderClip, starTape, speechHeart
+    case scallop, roundFrame, patchCircle, patchRainbow, patchDonut, patchStar
 
     var assetName: String { "sticker-\(rawValue)" }
 }
@@ -114,6 +115,18 @@ struct StickerView: View {
                     }
                 }
             }
+        case .scallop:
+            Scallop(bumps: 16, depth: 0.06).fill(Color.powder)
+        case .roundFrame:
+            Circle().fill(Color.white).shadow(color: .black.opacity(0.25), radius: 2, y: 1.5)
+        case .patchCircle:
+            PatchView(symbol: "circle", fill: .white, border: Color(hex: 0x3D6CB9))
+        case .patchRainbow:
+            Image(systemName: "rainbow").resizable().scaledToFit().symbolRenderingMode(.multicolor)
+        case .patchDonut:
+            PatchView(symbol: "circle.circle", fill: Color(hex: 0xE7A0AE), border: Color(hex: 0xE9C99A))
+        case .patchStar:
+            PatchView(symbol: "star.fill", fill: Color(hex: 0xF0C93A), border: Color(hex: 0x3D6CB9))
         case .speechHeart:
             ZStack {
                 Image(systemName: "bubble.left.fill").resizable().scaledToFit().foregroundStyle(Color.kraft)
@@ -178,6 +191,66 @@ private struct BinderClip: View {
     }
 }
 
+/// An image from the asset catalog, or a fallback view if it's missing.
+struct Artwork<Fallback: View>: View {
+    let name: String
+    /// nil stretches the image to the frame (fine for paper scraps).
+    var contentMode: ContentMode? = .fit
+    var alignment: Alignment = .center
+    @ViewBuilder var fallback: Fallback
+
+    var body: some View {
+        if let image = UIImage(named: name) {
+            Group {
+                if let contentMode {
+                    Image(uiImage: image).resizable().aspectRatio(contentMode: contentMode)
+                } else {
+                    Image(uiImage: image).resizable()
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: alignment)
+            .clipped()
+            .accessibilityHidden(true)
+        } else {
+            fallback
+        }
+    }
+}
+
+/// Her painted striped paper, repeated down the artboard.
+struct StripedPaper: View {
+    enum Kind { case blue, red }
+    var kind: Kind = .blue
+
+    var body: some View {
+        if let image = UIImage(named: kind == .blue ? "texture-stripesBlue" : "texture-stripesRed") {
+            GeometryReader { geo in
+                // In the Canva file the stripe image is ~26% wider than the artboard.
+                let tileWidth = geo.size.width * 1.26
+                let tileHeight = tileWidth * image.size.height / image.size.width
+                let count = Int((geo.size.height / tileHeight).rounded(.up))
+                VStack(spacing: 0) {
+                    ForEach(0..<max(count, 1), id: \.self) { i in
+                        Image(uiImage: image)
+                            .resizable()
+                            .frame(width: tileWidth, height: tileHeight)
+                            // Flip every other tile so the seams line up.
+                            .scaleEffect(x: 1, y: i.isMultiple(of: 2) ? 1 : -1)
+                    }
+                }
+                .frame(width: geo.size.width, height: geo.size.height, alignment: .top)
+                .clipped()
+            }
+            .accessibilityHidden(true)
+        } else {
+            switch kind {
+            case .blue: Stripes(stripe: .powder)
+            case .red: Stripes(base: Color(hex: 0xF4A9B8), stripe: Color(hex: 0xB8321C))
+            }
+        }
+    }
+}
+
 /// An embroidered patch, used for badges.
 struct PatchView: View {
     let symbol: String
@@ -201,5 +274,39 @@ struct PatchView: View {
         .saturation(earned ? 1 : 0)
         .opacity(earned ? 1 : 0.35)
         .shadow(color: .black.opacity(earned ? 0.25 : 0), radius: 2, y: 2)
+    }
+}
+
+/// A badge drawn as one of her embroidered patches. A few badges use a specific
+/// patch (rainbow, star, donut); the rest put their icon inside the blue circle patch.
+struct BadgePatch: View {
+    let badge: BadgeInfo
+    var earned = true
+
+    var body: some View {
+        Group {
+            if UIImage(named: badge.art.assetName) != nil {
+                if badge.art == .patchCircle {
+                    ZStack {
+                        StickerView(.patchCircle)
+                        Image(systemName: badge.symbol)
+                            .resizable()
+                            .scaledToFit()
+                            .fontWeight(.heavy)
+                            .foregroundStyle(badge.border)
+                            .padding(26)
+                    }
+                } else {
+                    StickerView(badge.art)
+                }
+            } else {
+                PatchView(symbol: badge.symbol, fill: badge.fill, border: badge.border)
+            }
+        }
+        .compositingGroup()
+        .saturation(earned ? 1 : 0)
+        .opacity(earned ? 1 : 0.35)
+        .shadow(color: .black.opacity(earned ? 0.2 : 0), radius: 2, y: 2)
+        .accessibilityLabel(badge.name)
     }
 }

@@ -110,7 +110,7 @@ struct BadgeBookView: View {
                         let earned = earnedCodes.contains(badge.code)
                         Button { selected = badge } label: {
                             VStack(spacing: 6) {
-                                PatchView(symbol: badge.symbol, fill: badge.fill, border: badge.border, earned: earned)
+                                BadgePatch(badge: badge, earned: earned)
                                     .frame(width: 88, height: 88)
                                 Text(badge.name.lowercased())
                                     .font(.display(12, weight: .bold))

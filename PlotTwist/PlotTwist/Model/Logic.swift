@@ -134,6 +134,16 @@ struct BadgeInfo: Identifiable, Hashable {
     let border: Color
     var id: String { code }
 
+    /// Which of her Canva patches this badge is stitched onto.
+    var art: Sticker {
+        switch code {
+        case "milestone:10": .patchRainbow
+        case "genre:scifi", "genre:ya": .patchStar
+        case "goal:monthly": .patchDonut
+        default: .patchCircle
+        }
+    }
+
     static func == (a: BadgeInfo, b: BadgeInfo) -> Bool { a.code == b.code }
     func hash(into h: inout Hasher) { h.combine(code) }
 }

@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 @main
 struct PlotTwistApp: App {
@@ -49,14 +50,22 @@ private struct Splash: View {
     }
 }
 
-/// "plot twist" in her heavy gold lettering.
+/// Her chunky "plot twist" logo (falls back to typed lettering if the artwork is missing).
 struct Wordmark: View {
     var size: CGFloat = 40
     var body: some View {
-        Text("plot twist")
-            .font(.display(size))
-            .tracking(-0.078 * size)
-            .foregroundStyle(Color.marigold)
+        if let logo = UIImage(named: "logo-chunky") {
+            Image(uiImage: logo)
+                .resizable()
+                .scaledToFit()
+                .frame(height: size * 1.7)
+                .accessibilityLabel("plot twist")
+        } else {
+            Text("plot twist")
+                .font(.display(size))
+                .tracking(-0.078 * size)
+                .foregroundStyle(Color.marigold)
+        }
     }
 }
 

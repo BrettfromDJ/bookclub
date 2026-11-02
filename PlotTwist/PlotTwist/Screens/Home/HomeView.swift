@@ -87,7 +87,7 @@ private struct ReadingArtboard: View {
 
     var body: some View {
         Artboard(height: 1880) {
-            Stripes(stripe: .powder).place(0, 0, 1080, 1880)
+            StripedPaper(kind: .blue).place(0, 0, 1080, 1880)
 
             // Header card
             RoundedRectangle(cornerRadius: 51 * s).fill(Color.cream).place(0, -57, 1080, 616)
@@ -96,10 +96,12 @@ private struct ReadingArtboard: View {
                 .place(32, 18, 1026, 516)
 
             // Torn paper with the TBR fanned out on it
-            TornPaper(edges: [.bottom], roughness: 16 * s, seed: 5)
-                .fill(Color.white)
-                .shadow(color: .black.opacity(0.18), radius: 6 * s, x: 3 * s, y: 6 * s)
-                .place(103, 771, 869, 639)
+            Artwork(name: "paper-rippedPaper", contentMode: nil) {
+                TornPaper(edges: [.trailing], roughness: 16 * s, seed: 5)
+                    .fill(Color.white)
+                    .shadow(color: .black.opacity(0.18), radius: 6 * s, x: 3 * s, y: 6 * s)
+            }
+            .place(218, 656, 639, 869, rotation: 90)
             StickerView(.binderClip).place(322, 573, 430, 232)
             TBRFan()
 
@@ -206,21 +208,36 @@ private struct ReceiptPrinter: View {
     var body: some View {
         // Local design coordinates: 864 × 382.
         ZStack(alignment: .topLeading) {
-            // Paper coming out of the slot
-            ReceiptShape(tooth: 14 * s)
-                .fill(Color.white)
-                .shadow(color: .black.opacity(0.12), radius: 3 * s, y: 3 * s)
-                .place(70, 60, 724, 322)
-            // Printer body
-            RoundedRectangle(cornerRadius: 26 * s)
-                .fill(LinearGradient(colors: [Color(hex: 0xF7F7F5), Color(hex: 0xDCDCD8)], startPoint: .top, endPoint: .bottom))
-                .shadow(color: .black.opacity(0.18), radius: 5 * s, y: 4 * s)
-                .place(0, 0, 864, 84)
-            Capsule().fill(Color(hex: 0x6E6E6A)).place(48, 54, 768, 14)
+            if let printer = UIImage(named: "paper-receiptPrinter") {
+                // Her printer graphic: the top (slot + paper) and the zigzag bottom, like the Canva file.
+                VStack(spacing: 0) {
+                    // Fill to the full width, then crop to the top and bottom slices.
+                    Image(uiImage: printer).resizable().scaledToFill()
+                        .frame(width: 864 * s, height: 286 * s, alignment: .top).clipped()
+                    Image(uiImage: printer).resizable().scaledToFill()
+                        .frame(width: 864 * s, height: 96 * s, alignment: .bottom).clipped()
+                }
+                .place(0, 0, 864, 382)
+            } else {
+                drawnPrinter
+            }
             DesignText("print your \(Month.name())", size: 31, serif: true, color: .marigold).place(160, 185, 544, 37)
             DesignText("reading receipt", size: 63, weight: .extraBold, color: .blush, tracking: -0.02).place(100, 208, 661, 75)
         }
         .frame(width: 864 * s, height: 382 * s, alignment: .topLeading)
+    }
+
+    /// Fallback if the printer artwork is missing.
+    @ViewBuilder private var drawnPrinter: some View {
+        ReceiptShape(tooth: 14 * s)
+            .fill(Color.white)
+            .shadow(color: .black.opacity(0.12), radius: 3 * s, y: 3 * s)
+            .place(70, 60, 724, 322)
+        RoundedRectangle(cornerRadius: 26 * s)
+            .fill(LinearGradient(colors: [Color(hex: 0xF7F7F5), Color(hex: 0xDCDCD8)], startPoint: .top, endPoint: .bottom))
+            .shadow(color: .black.opacity(0.18), radius: 5 * s, y: 4 * s)
+            .place(0, 0, 864, 84)
+        Capsule().fill(Color(hex: 0x6E6E6A)).place(48, 54, 768, 14)
     }
 }
 
@@ -232,19 +249,11 @@ private struct ClubArtboard: View {
 
     var body: some View {
         Artboard(height: 1930) {
-            Stripes(stripe: .powder, seed: 8).place(0, 0, 1080, 1930)
+            StripedPaper(kind: .blue).place(0, 0, 1080, 1930)
 
-            // Layered note: pink sheet behind, cream ring-bound sheet in front
-            TornPaper(edges: [.bottom, .trailing], roughness: 10 * s, seed: 31)
-                .fill(Color(hex: 0xF5BFCB))
-                .place(150, 100, 820, 860, rotation: 4)
-            TornPaper(edges: [.bottom], roughness: 14 * s, seed: 32)
-                .fill(LinearGradient(colors: [Color(hex: 0xFBF7EC), Color(hex: 0xF1EBDC)], startPoint: .topLeading, endPoint: .bottomTrailing))
-                .shadow(color: .black.opacity(0.15), radius: 4 * s, y: 3 * s)
-                .place(108, 51, 830, 880)
-            ForEach(0..<8, id: \.self) { i in
-                Circle().fill(Color(hex: 0xF5BFCB)).place(140, 120 + CGFloat(i) * 100, 22, 22)
-            }
+            // Layered note: pink grid sheet behind, cream ring-bound sheet in front
+            Artwork(name: "paper-tornNote", contentMode: nil) { DrawnNote() }
+                .place(108, 51, 864, 909)
 
             NavigationLink(value: Route.club) { ClubCover() }
                 .buttonStyle(.squish)
@@ -260,13 +269,11 @@ private struct ClubArtboard: View {
             .place(348, 779, 418, 98, rotation: -3.3)
 
             // Red and pink striped band with torn notebook paper along its top edge
-            Stripes(base: Color(hex: 0xF4A9B8), stripe: Color(hex: 0xB8321C), seed: 9).place(0, 1158, 1080, 772)
-            ZStack {
-                TornPaper(edges: [.top, .bottom], roughness: 12 * s, seed: 33).fill(Color(hex: 0xFBF8F0))
-                RuledLines(spacing: 28 * s).mask(TornPaper(edges: [.top, .bottom], roughness: 12 * s, seed: 33))
-            }
-            .shadow(color: .black.opacity(0.12), radius: 3 * s, y: 2 * s)
-            .place(-60, 1040, 1200, 200, rotation: -1)
+            StripedPaper(kind: .red).place(0, 1158, 1080, 772)
+            Artwork(name: "paper-linedPaper", contentMode: .fill, alignment: .bottom) { DrawnLinedStrip() }
+                .place(-75, 1007, 1264, 233, rotation: 180)
+            Artwork(name: "paper-linedPaper", contentMode: .fill, alignment: .top) { EmptyView() }
+                .place(-184, 1118, 1264, 166)
 
             NavigationLink(value: Route.shelf) { PunchCardView() }
                 .buttonStyle(.squish)
@@ -326,11 +333,7 @@ private struct PunchCardView: View {
                     .place(179 + col * 126, 229 + row * 130, 108, 108)
             }
 
-            ZStack {
-                Scallop(bumps: 16, depth: 0.06).fill(Color.powder)
-                Scallop(bumps: 16, depth: 0.06).stroke(Color.white.opacity(0.7), lineWidth: 2 * s)
-            }
-            .place(678, -16, 208, 208)
+            StickerView(.scallop).place(678, -16, 208, 208)
             DesignText(card.punched == PunchCard.holesPerCard ? "full\ncard!" : "\(card.toNextCard)\nmore!",
                        size: 58, color: .brick, tracking: -0.05)
                 .place(678, 11, 208, 150, rotation: 9)
@@ -345,7 +348,7 @@ private struct Hole: View {
     var punched: Bool
     var body: some View {
         ZStack {
-            Circle().fill(Color.white).shadow(color: .black.opacity(0.25), radius: 2, y: 1.5)
+            StickerView(.roundFrame)
             if punched {
                 // The hole shows the striped paper underneath, with a heart punch.
                 Circle().fill(Color(hex: 0xB8321C)).padding(4)
@@ -370,7 +373,7 @@ private struct MenuArtboard: View {
     var body: some View {
         Artboard(height: 1180) {
             Color.honey.place(0, 0, 1080, 1180)
-            Stripes(base: Color(hex: 0xF4A9B8), stripe: Color(hex: 0xB8321C), seed: 12).place(0, 0, 1080, 520)
+            StripedPaper(kind: .red).place(0, 0, 1080, 463)
 
             NavigationLink(value: Route.profile) {
                 ArtboardPill(title: "profile", fill: .marigold, text: .brick, fontSize: 63)
@@ -383,15 +386,29 @@ private struct MenuArtboard: View {
             .buttonStyle(.squish)
             .place(206, 237, 660, 98, rotation: -3.4)
 
-            StickerView(.starTape).place(-60, 450, 1200, 160, rotation: -2)
+            Artwork(name: Sticker.starTape.assetName, contentMode: .fill, alignment: .top) { StickerView(.starTape) }
+                .place(-195, 451, 1491, 323)
             Button(action: share) { StickerView(.speechHeart) }
                 .buttonStyle(.squish)
-                .place(374, 632, 352, 250)
+                .place(334, 612, 432, 307)
             StickerView(.pinkStar).place(96, 20, 216, 216)
             StickerView(.bow).place(732, 274, 167, 139, rotation: 8)
 
             Button(action: share) {
-                DesignText("share your plot twist", size: 115, color: .powder, tracking: -0.078)
+                // Her lettering is set very tight (line height 0.67), so each line gets its own short row.
+                VStack(spacing: 0) {
+                    ForEach(["share your", "plot twist"], id: \.self) { line in
+                        Text(line)
+                            .font(.display(115 * s))
+                            .tracking(-0.078 * 115 * s)
+                            .foregroundStyle(Color.powder)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.6)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .frame(width: 666 * s, height: 77 * s)
+                    }
+                }
+                .accessibilityElement(children: .combine)
             }
             .buttonStyle(.squish)
             .place(218, 900, 666, 216)
@@ -407,7 +424,7 @@ private struct LibraryArtboard: View {
 
     var body: some View {
         Artboard(height: 2160) {
-            Stripes(stripe: .powder, seed: 14).place(0, 0, 1080, 2160)
+            StripedPaper(kind: .blue).place(0, 0, 1080, 2160)
 
             DesignText("\(model.me?.possessive ?? "my") library", size: 177, color: .brick, tracking: -0.078)
                 .place(94, 43, 869, 335)
@@ -497,7 +514,7 @@ private struct PatchBoard: View {
             } else {
                 ForEach(Array(infos.prefix(Self.spots.count).enumerated()), id: \.element.code) { i, info in
                     let spot = Self.spots[i]
-                    PatchView(symbol: info.symbol, fill: info.fill, border: info.border)
+                    BadgePatch(badge: info)
                         .place(spot.x, spot.y, spot.size, spot.size, rotation: spot.rot)
                 }
                 if infos.count > Self.spots.count {
@@ -511,4 +528,31 @@ private struct PatchBoard: View {
 
 extension Array {
     subscript(safe index: Int) -> Element? { indices.contains(index) ? self[index] : nil }
+}
+
+/// Fallback for the layered note if its artwork is missing.
+private struct DrawnNote: View {
+    var body: some View {
+        ZStack {
+            TornPaper(edges: [.bottom, .trailing], roughness: 4, seed: 31)
+                .fill(Color(hex: 0xF5BFCB))
+                .rotationEffect(.degrees(4))
+                .padding([.leading, .top], 16)
+            TornPaper(edges: [.bottom], roughness: 5, seed: 32)
+                .fill(LinearGradient(colors: [Color(hex: 0xFBF7EC), Color(hex: 0xF1EBDC)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .shadow(color: .black.opacity(0.15), radius: 2, y: 1)
+                .padding([.trailing, .bottom], 14)
+        }
+    }
+}
+
+/// Fallback for the torn notebook strip if its artwork is missing.
+private struct DrawnLinedStrip: View {
+    var body: some View {
+        ZStack {
+            TornPaper(edges: [.top, .bottom], roughness: 5, seed: 33).fill(Color(hex: 0xFBF8F0))
+            RuledLines(spacing: 10).mask(TornPaper(edges: [.top, .bottom], roughness: 5, seed: 33))
+        }
+        .shadow(color: .black.opacity(0.12), radius: 1.5, y: 1)
+    }
 }
