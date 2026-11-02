@@ -1,4 +1,6 @@
-# Book Club
+# Plot Twist
+
+> **The iOS app is now native SwiftUI:** see [`PlotTwist/README.md`](PlotTwist/README.md). It shares this repo's Supabase backend. The Next.js web app below and its older Capacitor wrapper (`ios/`) still work but are no longer the main app.
 
 A reading journal with friends: a drag-and-drop TBR, a 10-hole punch card, monthly picks, a badge book, an app-wide monthly book club, and MySpace-style profiles with skins, a top 8 and a profile song.
 
@@ -43,9 +45,9 @@ With no environment variables, the app runs in **demo mode** with sample data, s
 
 Badges and feed activity are created by database triggers when a book is marked finished, so they can't be faked from the client. Row-level security enforces privacy: a private journal's shelves, picks and activity are visible only to approved followers. The showcase (name, photo, skin, song, top 8, badges) is always visible.
 
-## iOS app
+## iOS app (legacy web wrapper)
 
-The iOS app (`ios/`) is a native Capacitor shell that loads the deployed site and adds native haptics (the "punch"), the share sheet, the status bar and push notifications.
+Superseded by the native app in `PlotTwist/`. The old `ios/` folder is a Capacitor shell that loads the deployed site and adds native haptics (the "punch"), the share sheet, the status bar and push notifications.
 
 1. Deploy to Vercel, then set `CAP_SERVER_URL=https://<your-domain>` in your shell.
 2. Run:

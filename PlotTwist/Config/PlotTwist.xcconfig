@@ -1,0 +1,14 @@
+// Build settings for the Plot Twist app target.
+//
+// Your Supabase keys live in Secrets.xcconfig (git-ignored). Copy
+// Secrets.example.xcconfig to Secrets.xcconfig and fill it in.
+// With no keys, the app runs in demo mode with sample data.
+
+PRODUCT_BUNDLE_IDENTIFIER = co.designjoy.plottwist
+DEVELOPMENT_TEAM =
+
+SUPABASE_HOST =
+SUPABASE_ANON_KEY =
+GOOGLE_BOOKS_API_KEY =
+
+#include? "Secrets.xcconfig"
