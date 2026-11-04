@@ -8,6 +8,8 @@
 	<string>$(SUPABASE_ANON_KEY)</string>
 	<key>GoogleBooksAPIKey</key>
 	<string>$(GOOGLE_BOOKS_API_KEY)</string>
+	<key>SearchAPIHost</key>
+	<string>$(SEARCH_API_HOST)</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Poppins-SemiBold.ttf</string>

@@ -11,4 +11,8 @@ SUPABASE_HOST =
 SUPABASE_ANON_KEY =
 GOOGLE_BOOKS_API_KEY =
 
+// The website that runs book search (it searches Hardcover with the server's key).
+// Host only, no https:// (xcconfig files treat // as a comment).
+SEARCH_API_HOST = plottwist.pro
+
 #include? "Secrets.xcconfig"

@@ -1,13 +1,41 @@
 import Foundation
 
-/// Searches Google Books, falling back to Open Library if Google fails or finds nothing.
+/// Searches books the same way the website does: Hardcover first (through the
+/// website, which keeps the Hardcover token on the server), then Google Books,
+/// then Open Library, moving on whenever one fails or finds nothing.
 enum BookSearch {
     static func search(_ query: String) async throws -> [BookCandidate] {
         let q = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !q.isEmpty else { return [] }
 
-        if let books = try? await google(q), !books.isEmpty { return books }
-        return try await openLibrary(q)
+        if let books = try? await website(q), !books.isEmpty { return books.map(tidy) }
+        if let books = try? await google(q), !books.isEmpty { return books.map(tidy) }
+        return try await openLibrary(q).map(tidy)
+    }
+
+    /// Hardcover stores some names with extra spaces ("Katie   West").
+    private static func tidy(_ book: BookCandidate) -> BookCandidate {
+        var b = book
+        b.authors = b.authors.map { $0.split(whereSeparator: \.isWhitespace).joined(separator: " ") }
+        b.title = b.title.split(whereSeparator: \.isWhitespace).joined(separator: " ")
+        return b
+    }
+
+    // MARK: Website (Hardcover)
+
+    private struct WebsiteResponse: Decodable { var results: [BookCandidate] }
+
+    /// The website's /api/books/search, which searches Hardcover with the server's key.
+    private static func website(_ q: String) async throws -> [BookCandidate] {
+        guard let base = AppConfig.searchAPIBase,
+              var c = URLComponents(url: base.appendingPathComponent("api/books/search"), resolvingAgainstBaseURL: false) else { return [] }
+        c.queryItems = [URLQueryItem(name: "q", value: q)]
+        guard let url = c.url else { return [] }
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 8
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard (response as? HTTPURLResponse)?.statusCode == 200 else { return [] }
+        return try JSONDecoder().decode(WebsiteResponse.self, from: data).results
     }
 
     // MARK: Google Books
@@ -107,4 +135,10 @@ enum AppConfig {
 
     static var supabaseAnonKey: String? { value("SupabaseAnonKey") }
     static var googleBooksKey: String? { value("GoogleBooksAPIKey") }
+
+    /// The Plot Twist website, whose search endpoint covers Hardcover.
+    static var searchAPIBase: URL? {
+        guard let host = value("SearchAPIHost") else { return nil }
+        return URL(string: host.hasPrefix("http") ? host : "https://\(host)")
+    }
 }

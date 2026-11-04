@@ -34,7 +34,7 @@ enum ShelfStatus: String, Codable, CaseIterable, Hashable {
 }
 
 enum BookSource: String, Codable, Hashable {
-    case google, openlibrary, manual
+    case hardcover, google, openlibrary, manual
 }
 
 /// A search result that hasn't been saved to the books table yet.
