@@ -73,6 +73,9 @@ struct ProfileView: View {
         .foregroundStyle(Color.brick)
         .scrapbookScreen(stripe: .blush)
         .onAppear(perform: fill)
+        // Re-check the profile (e.g. admin access granted since sign-in).
+        .task { await model.refresh() }
+        .refreshable { await model.refresh(); fill() }
         .onChange(of: photo) { _, item in
             guard let item else { return }
             Task { await upload(item) }

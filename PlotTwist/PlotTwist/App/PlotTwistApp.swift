@@ -21,6 +21,7 @@ struct PlotTwistApp: App {
 
 struct RootView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         ZStack {
@@ -38,6 +39,10 @@ struct RootView: View {
         .animation(.easeInOut(duration: 0.3), value: model.phase)
         .overlay(alignment: .top) { Toast().animation(.spring(duration: 0.35), value: model.message) }
         .task { await model.launch() }
+        // Coming back to the app picks up anything that changed meanwhile.
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active, model.phase == .signedIn { Task { await model.refresh() } }
+        }
     }
 }
 
