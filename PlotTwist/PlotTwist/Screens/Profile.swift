@@ -71,7 +71,7 @@ struct ProfileView: View {
         }
         .font(.display(15, weight: .semiBold))
         .foregroundStyle(Color.brick)
-        .scrapbookScreen(stripe: .blush)
+        .scrapbookScreen()
         .onAppear(perform: fill)
         // Re-check the profile (e.g. admin access granted since sign-in).
         .task { await model.refresh() }

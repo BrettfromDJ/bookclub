@@ -185,7 +185,14 @@ struct StripedBackground: View {
     var stripe: Color = .powder
     var base: Color = .cream
     var body: some View {
-        Stripes(base: base, stripe: stripe).ignoresSafeArea()
+        Group {
+            if stripe == .powder && base == .cream {
+                StripedPaper(kind: .blue)
+            } else {
+                Stripes(base: base, stripe: stripe)
+            }
+        }
+        .ignoresSafeArea()
     }
 }
 

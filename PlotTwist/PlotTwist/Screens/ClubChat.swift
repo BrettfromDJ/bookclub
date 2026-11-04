@@ -49,7 +49,7 @@ struct ClubChatView: View {
 
             composer
         }
-        .scrapbookScreen(stripe: .blush)
+        .scrapbookScreen()
         .revealsOnAppear()
         .animation(.spring(response: 0.35, dampingFraction: 0.7), value: messages)
         .task {
