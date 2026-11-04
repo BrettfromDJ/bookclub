@@ -458,7 +458,9 @@ private struct ClubArtboard: View {
             .entrance(.pop(spin: -10), delay: 1.0)
             .place(348, 779, 418, 98, rotation: -3.3)
 
-            // A thin strip of torn notebook paper across the stripes, as in the Canva file.
+            // Red and pink stripes behind the punch card and "friends" (continued into the
+            // next artboard), with a thin strip of torn notebook paper along the top edge.
+            StripedPaper(kind: .red, top: 0).decor().place(0, 1158, 1080, 772)
             Artwork(name: "paper-linedPaper", contentMode: .fill, alignment: .bottom) { DrawnLinedStrip() }
                 .entrance(.slide, delay: 0.1)
                 .place(-75, 1007, 1264, 233, rotation: 180)
@@ -588,8 +590,8 @@ private struct MenuArtboard: View {
     var body: some View {
         Artboard(height: 1180) {
             Color.honey.place(0, 0, 1080, 1180)
-            // Blue stripes, continuing on from the artboard above (1880 + 1930 down the sheet).
-            StripedPaper(kind: .blue, top: 3810).decor().place(0, 0, 1080, 463)
+            // Red stripes behind "profile" and "explore books", continuing from the band above.
+            StripedPaper(kind: .red, top: 772).decor().place(0, 0, 1080, 463)
 
             NavigationLink(value: Route.profile) {
                 ArtboardPill(title: "profile", fill: .marigold, text: .brick, fontSize: 63)
