@@ -253,6 +253,18 @@ final class SupabaseBackend: Backend {
         return rows.first
     }
 
+    private struct ClubRow: Encodable { var month: String; var book_id: UUID; var blurb: String }
+
+    func setClubMonth(_ month: String, book: BookCandidate, blurb: String) async throws {
+        guard try await profile(id: try uid()).isAdmin else {
+            throw BackendError.message("Only book club admins can set the monthly pick.")
+        }
+        let bookID = try await ensureBook(book)
+        try await client.from("club_months")
+            .upsert(ClubRow(month: month, book_id: bookID, blurb: String(blurb.prefix(500))), onConflict: "month")
+            .execute()
+    }
+
     func clubMessages(_ month: String) async throws -> [ClubMessage] {
         let rows: [ClubMessage] = try await client.from("club_messages")
             .select("*, \(Self.profileJoin)")

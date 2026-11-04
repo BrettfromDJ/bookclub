@@ -228,6 +228,13 @@ final class DemoBackend: Backend {
     // MARK: Book club
 
     func clubMonth(_ month: String) async throws -> ClubMonth? { club?.month == month ? club : nil }
+
+    func setClubMonth(_ month: String, book c: BookCandidate, blurb: String) async throws {
+        let book = books.first { $0.externalID == c.externalID }
+            ?? Book(id: UUID(), source: c.source, externalID: c.externalID, title: c.title, authors: c.authors, coverURL: c.coverURL,
+                    pageCount: c.pageCount, publishedYear: c.publishedYear, categories: c.categories, badgeCategory: c.badgeCategory)
+        club = ClubMonth(month: month, blurb: blurb, partnerName: nil, partnerURL: nil, partnerLogoURL: nil, book: book)
+    }
     func clubMessages(_ month: String) async throws -> [ClubMessage] { messages.filter { $0.month == month } }
 
     func sendClubMessage(_ month: String, body: String) async throws {

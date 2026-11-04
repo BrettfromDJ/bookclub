@@ -12,6 +12,7 @@ enum Route: Hashable {
     case topEight
     case badges
     case reader(String)
+    case clubAdmin
 }
 
 /// The home screen: her "Plot Twist" Canva file, one continuous scroll made of
@@ -62,6 +63,7 @@ struct HomeView: View {
             case .topEight: TopEightEditor()
             case .badges: BadgeBookView()
             case .reader(let username): ReaderView(username: username)
+            case .clubAdmin: ClubPickEditor()
             }
         }
     }

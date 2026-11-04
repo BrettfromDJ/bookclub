@@ -52,6 +52,18 @@ struct ProfileView: View {
                     .listRowInsets(EdgeInsets())
             }
 
+            if model.me?.isAdmin == true {
+                Section {
+                    NavigationLink(value: Route.clubAdmin) {
+                        Label("set the monthly book club pick", systemImage: "books.vertical")
+                    }
+                } header: {
+                    Text("book club admin")
+                } footer: {
+                    Text("Only admins see this.")
+                }
+            }
+
             Section("account") {
                 Button("sign out") { confirmSignOut = true }
                 Button("delete my account", role: .destructive) { confirmDelete = true }

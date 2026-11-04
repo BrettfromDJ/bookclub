@@ -91,6 +91,11 @@ struct ClubChatView: View {
                 }
             } else {
                 Text("this month's pick is coming soon").font(.serif(22)).foregroundStyle(Color.rose)
+                if model.me?.isAdmin == true {
+                    NavigationLink(value: Route.clubAdmin) { Text("set this month's pick") }
+                        .buttonStyle(BrickButtonStyle(fill: .olive))
+                        .frame(maxWidth: 240)
+                }
             }
         }
         .padding(.vertical, 12)

@@ -39,6 +39,8 @@ protocol Backend: AnyObject {
 
     // Book club
     func clubMonth(_ month: String) async throws -> ClubMonth?
+    /// Admins only (enforced by the database): set a month's book club pick.
+    func setClubMonth(_ month: String, book: BookCandidate, blurb: String) async throws
     func clubMessages(_ month: String) async throws -> [ClubMessage]
     func sendClubMessage(_ month: String, body: String) async throws
     func deleteClubMessage(_ id: UUID) async throws
