@@ -3,9 +3,13 @@ import SwiftUI
 /// All shelves: currently reading, the ranked TBR (drag to reorder), and finished.
 struct ShelfView: View {
     @Environment(AppModel.self) private var model
-    @State private var shelf: ShelfStatus = .tbr
+    @State private var shelf: ShelfStatus
     @State private var formatFilter: BookFormat?
     @State private var adding = false
+
+    init(start: ShelfStatus = .tbr) {
+        _shelf = State(initialValue: start)
+    }
 
     private var rows: [UserBook] {
         let base: [UserBook] = switch shelf {

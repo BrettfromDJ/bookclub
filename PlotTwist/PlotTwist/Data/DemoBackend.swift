@@ -64,7 +64,7 @@ final class DemoBackend: Backend {
             row(heartless, .tbr, 3),
             row(powerless, .tbr, 4, formats: [.kindle]),
             row(hopeless, .tbr, 5),
-            row(happy, .tbr, 6, formats: [.audio, .physical]),
+            row(happy, .reading, 0, formats: [.audio, .physical]),
             row(funny, .read, 0, finished: "\(thisMonth)02"),
             row(bookLovers, .read, 0, finished: "\(thisMonth)05", formats: [.audio]),
             row(fourth, .read, 0, finished: "\(thisMonth)09"),

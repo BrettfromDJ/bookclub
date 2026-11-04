@@ -13,6 +13,8 @@ enum Route: Hashable {
     case badges
     case reader(String)
     case clubAdmin
+    /// Your shelves, opened on the Reading tab.
+    case reading
 }
 
 /// The home screen: her "Plot Twist" Canva file, one continuous scroll made of
@@ -54,6 +56,7 @@ struct HomeView: View {
         .navigationDestination(for: Route.self) { route in
             switch route {
             case .shelf: ShelfView()
+            case .reading: ShelfView(start: .reading)
             case .book(let id): BookDetailView(userBookID: id)
             case .receipt: ReceiptView()
             case .club: ClubChatView()
@@ -87,6 +90,13 @@ private struct ReadingArtboard: View {
     @Environment(\.designScale) private var s
     var addBook: () -> Void
 
+    /// One book: open it. Several: open the Reading shelf. None: pick from the TBR.
+    private var currentReadRoute: Route {
+        let reading = model.currentlyReading
+        if reading.count == 1, let only = reading.first { return .book(only.id) }
+        return reading.isEmpty ? .shelf : .reading
+    }
+
     var body: some View {
         Artboard(height: 1880) {
             StripedPaper(kind: .blue, top: 0).place(0, 0, 1080, 1880)
@@ -119,15 +129,16 @@ private struct ReadingArtboard: View {
             StickerView(.redBurst).decor().idle(.pulse(1.15), period: 0.8).entrance(.pop(spin: 90), delay: 0.55).place(115, 628, 127, 122)
             StickerView(.smiley).decor().idle(.wobble(12), period: 1.1).entrance(.pop(spin: 200), delay: 0.65).place(901, 734, 111, 111, rotation: -11)
 
-            // Current read
-            NavigationLink(value: model.currentlyReading.first.map { Route.book($0.id) } ?? Route.shelf) {
-                ArtboardPill(title: "your current read", fill: .blush, text: .cream, fontSize: 46)
+            // Current read(s): one book looks exactly like her design; several become a fanned stack.
+            NavigationLink(value: currentReadRoute) {
+                ArtboardPill(title: model.currentlyReading.count > 1 ? "your current reads" : "your current read",
+                             fill: .blush, text: .cream, fontSize: 46)
             }
             .buttonStyle(.squish)
             .idle(.wobble(1.5), period: 1.8)
             .entrance(.fly(x: 220, y: 0), delay: 0.5)
             .place(601, 456, 581, 136, rotation: -6)
-            CurrentReadCover()
+            CurrentReadsDeck()
                 .idle(.bob(5), period: 2.2)
                 .entrance(.drop, delay: 0.2)
                 .place(716, 119, 242, 359, rotation: 5)
@@ -200,17 +211,23 @@ private struct DrawnDashedBorder: View {
     }
 }
 
-private struct CurrentReadCover: View {
+/// Your current read in the header. Reading several at once? They become a
+/// fanned stack: swipe it (or tap a peeking cover) to bring the next one to the
+/// front, tap the front cover to open it. It also flips through on its own.
+private struct CurrentReadsDeck: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    /// Which book is in front. Grows forever; wrapped with modulo.
+    @State private var front = 0
+    @State private var drag: CGFloat = 0
+    @State private var pausedUntil = Date.distantPast
+
+    /// Covers drawn behind the front one.
+    private let peeking = 2
 
     var body: some View {
-        if let current = model.currentlyReading.first {
-            NavigationLink(value: Route.book(current.id)) {
-                BookCover(current.book)
-                    .shadow(color: .black.opacity(0.25), radius: 4, x: 2, y: 4)
-            }
-            .buttonStyle(.squish)
-        } else {
+        let reading = model.currentlyReading
+        if reading.isEmpty {
             NavigationLink(value: Route.shelf) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 4).fill(Color.butter)
@@ -223,6 +240,110 @@ private struct CurrentReadCover: View {
                 }
             }
             .buttonStyle(.squish)
+        } else {
+            GeometryReader { geo in
+                let w = geo.size.width
+                ZStack {
+                    // Back to front, so the front cover is drawn last.
+                    ForEach(Array(reading.enumerated()), id: \.element.id) { index, row in
+                        let d = stackDepth(of: index, count: reading.count)
+                        if d <= peeking {
+                            card(row, depth: d, width: w)
+                                .zIndex(Double(peeking - d))
+                        }
+                    }
+                }
+                .frame(width: geo.size.width, height: geo.size.height)
+                .overlay(alignment: .topLeading) {
+                    if reading.count > 1 { countBadge(reading.count, width: w) }
+                }
+            }
+            .contentShape(Rectangle())
+            .simultaneousGesture(swipe(count: reading.count))
+            .sensoryFeedback(.selection, trigger: front)
+            .task(id: reading.count) { await autoAdvance(count: reading.count) }
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel(reading.count > 1 ? "Your \(reading.count) current reads" : "Your current read")
+            .accessibilityAdjustableAction { direction in
+                if direction == .increment { advance(by: 1) } else { advance(by: -1) }
+            }
+        }
+    }
+
+    /// 0 for the front cover, 1 just behind it, and so on.
+    private func stackDepth(of index: Int, count: Int) -> Int {
+        var d = (index - front) % count
+        if d < 0 { d += count }
+        return d
+    }
+
+    @ViewBuilder
+    private func card(_ row: UserBook, depth: Int, width w: CGFloat) -> some View {
+        let isFront = depth == 0
+        Group {
+            if isFront {
+                NavigationLink(value: Route.book(row.id)) { BookCover(row.book) }
+            } else {
+                Button { advance(by: depth) } label: { BookCover(row.book) }
+            }
+        }
+        .buttonStyle(.squish)
+        .shadow(color: .black.opacity(isFront ? 0.25 : 0.15), radius: 4, x: 2, y: 4)
+        // Peeking covers fan out up and to the right, like a hand of cards.
+        .scaleEffect(1 - CGFloat(depth) * 0.08)
+        .rotationEffect(.degrees(Double(depth) * 8 + (isFront ? Double(drag / max(w, 1)) * 18 : 0)))
+        .offset(x: CGFloat(depth) * w * 0.16 + (isFront ? drag : 0), y: -CGFloat(depth) * w * 0.07)
+        .brightness(isFront ? 0 : -0.04 * Double(depth))
+        .animation(.spring(response: 0.45, dampingFraction: 0.72), value: front)
+    }
+
+    private func countBadge(_ count: Int, width w: CGFloat) -> some View {
+        ZStack {
+            StickerView(.scallop)
+            VStack(spacing: -2) {
+                Text("\(count)").font(.display(w * 0.13))
+                Text("reads").font(.display(w * 0.075))
+            }
+            .foregroundStyle(Color.brick)
+        }
+        .frame(width: w * 0.42, height: w * 0.42)
+        .rotationEffect(.degrees(-12))
+        .offset(x: -w * 0.2, y: -w * 0.12)
+        .idle(.wobble(6), period: 1.1)
+        .decor()
+    }
+
+    private func swipe(count: Int) -> some Gesture {
+        DragGesture(minimumDistance: 10)
+            .onChanged { value in
+                guard count > 1, abs(value.translation.width) > abs(value.translation.height) else { return }
+                drag = value.translation.width
+                pausedUntil = .now.addingTimeInterval(6)
+            }
+            .onEnded { value in
+                guard count > 1 else { return }
+                let flung = abs(value.predictedEndTranslation.width) > 60
+                withAnimation(.spring(response: 0.45, dampingFraction: 0.72)) {
+                    if flung { front += 1 }
+                    drag = 0
+                }
+            }
+    }
+
+    private func advance(by steps: Int) {
+        withAnimation(.spring(response: 0.45, dampingFraction: 0.72)) { front += steps }
+        pausedUntil = .now.addingTimeInterval(6)
+    }
+
+    /// Flips to the next book every few seconds, pausing after you touch the stack.
+    private func autoAdvance(count: Int) async {
+        guard count > 1, !reduceMotion else { return }
+        while !Task.isCancelled {
+            try? await Task.sleep(for: .seconds(4.5))
+            guard !Task.isCancelled else { return }
+            if Date.now >= pausedUntil, drag == 0 {
+                withAnimation(.spring(response: 0.6, dampingFraction: 0.75)) { front += 1 }
+            }
         }
     }
 }
