@@ -1,0 +1,1194 @@
+<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">
+<Meta name="ExplicitAutoJoints">true</Meta>
+<External>null</External>
+<External>nil</External>
+<Item class="Workspace" referent="RBX58">
+<Properties><string name="Name">Workspace</string></Properties>
+<Item class="Part" referent="RBX1">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4284193356</Color3uint8>
+<CoordinateFrame name="CFrame"><X>0</X><Y>-10</Y><Z>0</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">1280</token>
+<string name="Name">Baseplate</string>
+<Vector3 name="size"><X>512</X><Y>20</Y><Z>512</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX2">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4282137660</Color3uint8>
+<CoordinateFrame name="CFrame"><X>0</X><Y>0.5</Y><Z>0</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">1376</token>
+<string name="Name">Road</string>
+<Vector3 name="size"><X>16</X><Y>1</Y><Z>220</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX3">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4294626325</Color3uint8>
+<CoordinateFrame name="CFrame"><X>-0.5</X><Y>0.55</Y><Z>0</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">Line</string>
+<Vector3 name="size"><X>0.6</X><Y>1.1</Y><Z>220</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX4">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4294626325</Color3uint8>
+<CoordinateFrame name="CFrame"><X>0.5</X><Y>0.55</Y><Z>0</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">Line</string>
+<Vector3 name="size"><X>0.6</X><Y>1.1</Y><Z>220</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX5">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4290690740</Color3uint8>
+<CoordinateFrame name="CFrame"><X>11</X><Y>0.5</Y><Z>0</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">816</token>
+<string name="Name">Sidewalk</string>
+<Vector3 name="size"><X>6</X><Y>1</Y><Z>220</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="SpawnLocation" referent="RBX17">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4286100700</Color3uint8>
+<CoordinateFrame name="CFrame"><X>-4</X><Y>0.5</Y><Z>-84</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">SpawnLocation</string>
+<Vector3 name="size"><X>10</X><Y>1</Y><Z>10</Z></Vector3>
+<bool name="Neutral">true</bool>
+</Properties>
+
+</Item><Item class="Model" referent="RBX16">
+<Properties><string name="Name">PostOffice</string></Properties>
+<Item class="Part" referent="RBX8">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4291346090</Color3uint8>
+<CoordinateFrame name="CFrame"><X>-14</X><Y>0.5</Y><Z>-100</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">816</token>
+<string name="Name">Floor</string>
+<Vector3 name="size"><X>20</X><Y>1</Y><Z>20</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX9">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4282803360</Color3uint8>
+<CoordinateFrame name="CFrame"><X>-23.5</X><Y>5.5</Y><Z>-100</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">848</token>
+<string name="Name">BackWall</string>
+<Vector3 name="size"><X>1</X><Y>10</Y><Z>20</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX10">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4282803360</Color3uint8>
+<CoordinateFrame name="CFrame"><X>-14</X><Y>5.5</Y><Z>-110.5</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">848</token>
+<string name="Name">SideWall</string>
+<Vector3 name="size"><X>20</X><Y>10</Y><Z>1</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX11">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4282803360</Color3uint8>
+<CoordinateFrame name="CFrame"><X>-14</X><Y>5.5</Y><Z>-89.5</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">848</token>
+<string name="Name">SideWall</string>
+<Vector3 name="size"><X>20</X><Y>10</Y><Z>1</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX12">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4289999410</Color3uint8>
+<CoordinateFrame name="CFrame"><X>-14</X><Y>11</Y><Z>-100</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">512</token>
+<string name="Name">Roof</string>
+<Vector3 name="size"><X>22</X><Y>1</Y><Z>24</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX13">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4280166715</Color3uint8>
+<CoordinateFrame name="CFrame"><X>-4</X><Y>8</Y><Z>-100</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">Sign</string>
+<Vector3 name="size"><X>0.5</X><Y>3</Y><Z>14</Z></Vector3>
+
+</Properties>
+<Item class="SurfaceGui" referent="RBX6">
+<Properties>
+<string name="Name">SignGui</string>
+<token name="Face">0</token>
+</Properties>
+<Item class="TextLabel" referent="RBX7">
+<Properties>
+<string name="Name">SignText</string>
+<float name="BackgroundTransparency">1</float>
+<Color3 name="TextColor3"><R>1</R><G>1</G><B>1</B></Color3>
+<bool name="TextScaled">true</bool>
+<string name="Text">POST OFFICE</string>
+<UDim2 name="Size"><XS>1</XS><XO>0</XO><YS>1</YS><YO>0</YO></UDim2>
+</Properties>
+</Item>
+</Item>
+</Item><Item class="Part" referent="RBX14">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4287388210</Color3uint8>
+<CoordinateFrame name="CFrame"><X>-16</X><Y>1.5</Y><Z>-100</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">512</token>
+<string name="Name">ClockInDesk</string>
+<Vector3 name="size"><X>6</X><Y>3</Y><Z>2</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX15">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4284102430</Color3uint8>
+<CoordinateFrame name="CFrame"><X>-16</X><Y>3.1</Y><Z>-100</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">512</token>
+<string name="Name">Counter top</string>
+<Vector3 name="size"><X>6.5</X><Y>0.2</Y><Z>2.5</Z></Vector3>
+
+</Properties>
+
+</Item>
+</Item>
+<Item class="Folder" referent="RBX59">
+<Properties><string name="Name">Mailboxes</string></Properties>
+<Item class="Part" referent="RBX18">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4291307560</Color3uint8>
+<CoordinateFrame name="CFrame"><X>12</X><Y>2.0</Y><Z>-60</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">12 Maple Street</string>
+<Vector3 name="size"><X>1.5</X><Y>4</Y><Z>1.5</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX26">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4291307560</Color3uint8>
+<CoordinateFrame name="CFrame"><X>12</X><Y>2.0</Y><Z>-20</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">14 Maple Street</string>
+<Vector3 name="size"><X>1.5</X><Y>4</Y><Z>1.5</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX34">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4291307560</Color3uint8>
+<CoordinateFrame name="CFrame"><X>12</X><Y>2.0</Y><Z>20</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">16 Maple Street</string>
+<Vector3 name="size"><X>1.5</X><Y>4</Y><Z>1.5</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX42">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4291307560</Color3uint8>
+<CoordinateFrame name="CFrame"><X>12</X><Y>2.0</Y><Z>60</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">18 Maple Street</string>
+<Vector3 name="size"><X>1.5</X><Y>4</Y><Z>1.5</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX50">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4291307560</Color3uint8>
+<CoordinateFrame name="CFrame"><X>12</X><Y>2.0</Y><Z>100</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">20 Maple Street</string>
+<Vector3 name="size"><X>1.5</X><Y>4</Y><Z>1.5</Z></Vector3>
+
+</Properties>
+
+</Item>
+</Item>
+<Item class="Folder" referent="RBX60">
+<Properties><string name="Name">Houses</string></Properties>
+<Item class="Model" referent="RBX25">
+<Properties><string name="Name">12 Maple Street house</string></Properties>
+<Item class="Part" referent="RBX19">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4293621850</Color3uint8>
+<CoordinateFrame name="CFrame"><X>30</X><Y>7.5</Y><Z>-60</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">848</token>
+<string name="Name">Body</string>
+<Vector3 name="size"><X>20</X><Y>15</Y><Z>16</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX20">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4284103730</Color3uint8>
+<CoordinateFrame name="CFrame"><X>30</X><Y>15.5</Y><Z>-60</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">512</token>
+<string name="Name">Roof</string>
+<Vector3 name="size"><X>22</X><Y>1</Y><Z>18</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX21">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4285417000</Color3uint8>
+<CoordinateFrame name="CFrame"><X>19.8</X><Y>3.5</Y><Z>-60</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">512</token>
+<string name="Name">Door</string>
+<Vector3 name="size"><X>0.5</X><Y>7</Y><Z>4</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX22">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4290045695</Color3uint8>
+<CoordinateFrame name="CFrame"><X>19.8</X><Y>9</Y><Z>-65</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">Window</string>
+<Vector3 name="size"><X>0.4</X><Y>3</Y><Z>3</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX23">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4290045695</Color3uint8>
+<CoordinateFrame name="CFrame"><X>19.8</X><Y>9</Y><Z>-55</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">Window</string>
+<Vector3 name="size"><X>0.4</X><Y>3</Y><Z>3</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX24">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4290690740</Color3uint8>
+<CoordinateFrame name="CFrame"><X>16</X><Y>0.52</Y><Z>-60</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">816</token>
+<string name="Name">Path</string>
+<Vector3 name="size"><X>8</X><Y>0.1</Y><Z>3</Z></Vector3>
+
+</Properties>
+
+</Item>
+</Item><Item class="Model" referent="RBX33">
+<Properties><string name="Name">14 Maple Street house</string></Properties>
+<Item class="Part" referent="RBX27">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4286098140</Color3uint8>
+<CoordinateFrame name="CFrame"><X>30</X><Y>7.5</Y><Z>-20</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">848</token>
+<string name="Name">Body</string>
+<Vector3 name="size"><X>20</X><Y>15</Y><Z>16</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX28">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4284103730</Color3uint8>
+<CoordinateFrame name="CFrame"><X>30</X><Y>15.5</Y><Z>-20</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">512</token>
+<string name="Name">Roof</string>
+<Vector3 name="size"><X>22</X><Y>1</Y><Z>18</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX29">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4285417000</Color3uint8>
+<CoordinateFrame name="CFrame"><X>19.8</X><Y>3.5</Y><Z>-20</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">512</token>
+<string name="Name">Door</string>
+<Vector3 name="size"><X>0.5</X><Y>7</Y><Z>4</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX30">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4290045695</Color3uint8>
+<CoordinateFrame name="CFrame"><X>19.8</X><Y>9</Y><Z>-25</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">Window</string>
+<Vector3 name="size"><X>0.4</X><Y>3</Y><Z>3</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX31">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4290045695</Color3uint8>
+<CoordinateFrame name="CFrame"><X>19.8</X><Y>9</Y><Z>-15</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">Window</string>
+<Vector3 name="size"><X>0.4</X><Y>3</Y><Z>3</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX32">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4290690740</Color3uint8>
+<CoordinateFrame name="CFrame"><X>16</X><Y>0.52</Y><Z>-20</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">816</token>
+<string name="Name">Path</string>
+<Vector3 name="size"><X>8</X><Y>0.1</Y><Z>3</Z></Vector3>
+
+</Properties>
+
+</Item>
+</Item><Item class="Model" referent="RBX41">
+<Properties><string name="Name">16 Maple Street house</string></Properties>
+<Item class="Part" referent="RBX35">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4293972590</Color3uint8>
+<CoordinateFrame name="CFrame"><X>30</X><Y>7.5</Y><Z>20</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">848</token>
+<string name="Name">Body</string>
+<Vector3 name="size"><X>20</X><Y>15</Y><Z>16</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX36">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4284103730</Color3uint8>
+<CoordinateFrame name="CFrame"><X>30</X><Y>15.5</Y><Z>20</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">512</token>
+<string name="Name">Roof</string>
+<Vector3 name="size"><X>22</X><Y>1</Y><Z>18</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX37">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4285417000</Color3uint8>
+<CoordinateFrame name="CFrame"><X>19.8</X><Y>3.5</Y><Z>20</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">512</token>
+<string name="Name">Door</string>
+<Vector3 name="size"><X>0.5</X><Y>7</Y><Z>4</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX38">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4290045695</Color3uint8>
+<CoordinateFrame name="CFrame"><X>19.8</X><Y>9</Y><Z>15</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">Window</string>
+<Vector3 name="size"><X>0.4</X><Y>3</Y><Z>3</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX39">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4290045695</Color3uint8>
+<CoordinateFrame name="CFrame"><X>19.8</X><Y>9</Y><Z>25</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">Window</string>
+<Vector3 name="size"><X>0.4</X><Y>3</Y><Z>3</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX40">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4290690740</Color3uint8>
+<CoordinateFrame name="CFrame"><X>16</X><Y>0.52</Y><Z>20</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">816</token>
+<string name="Name">Path</string>
+<Vector3 name="size"><X>8</X><Y>0.1</Y><Z>3</Z></Vector3>
+
+</Properties>
+
+</Item>
+</Item><Item class="Model" referent="RBX49">
+<Properties><string name="Name">18 Maple Street house</string></Properties>
+<Item class="Part" referent="RBX43">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4288071820</Color3uint8>
+<CoordinateFrame name="CFrame"><X>30</X><Y>7.5</Y><Z>60</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">848</token>
+<string name="Name">Body</string>
+<Vector3 name="size"><X>20</X><Y>15</Y><Z>16</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX44">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4284103730</Color3uint8>
+<CoordinateFrame name="CFrame"><X>30</X><Y>15.5</Y><Z>60</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">512</token>
+<string name="Name">Roof</string>
+<Vector3 name="size"><X>22</X><Y>1</Y><Z>18</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX45">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4285417000</Color3uint8>
+<CoordinateFrame name="CFrame"><X>19.8</X><Y>3.5</Y><Z>60</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">512</token>
+<string name="Name">Door</string>
+<Vector3 name="size"><X>0.5</X><Y>7</Y><Z>4</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX46">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4290045695</Color3uint8>
+<CoordinateFrame name="CFrame"><X>19.8</X><Y>9</Y><Z>55</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">Window</string>
+<Vector3 name="size"><X>0.4</X><Y>3</Y><Z>3</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX47">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4290045695</Color3uint8>
+<CoordinateFrame name="CFrame"><X>19.8</X><Y>9</Y><Z>65</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">Window</string>
+<Vector3 name="size"><X>0.4</X><Y>3</Y><Z>3</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX48">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4290690740</Color3uint8>
+<CoordinateFrame name="CFrame"><X>16</X><Y>0.52</Y><Z>60</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">816</token>
+<string name="Name">Path</string>
+<Vector3 name="size"><X>8</X><Y>0.1</Y><Z>3</Z></Vector3>
+
+</Properties>
+
+</Item>
+</Item><Item class="Model" referent="RBX57">
+<Properties><string name="Name">20 Maple Street house</string></Properties>
+<Item class="Part" referent="RBX51">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4291335890</Color3uint8>
+<CoordinateFrame name="CFrame"><X>30</X><Y>7.5</Y><Z>100</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">848</token>
+<string name="Name">Body</string>
+<Vector3 name="size"><X>20</X><Y>15</Y><Z>16</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX52">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4284103730</Color3uint8>
+<CoordinateFrame name="CFrame"><X>30</X><Y>15.5</Y><Z>100</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">512</token>
+<string name="Name">Roof</string>
+<Vector3 name="size"><X>22</X><Y>1</Y><Z>18</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX53">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4285417000</Color3uint8>
+<CoordinateFrame name="CFrame"><X>19.8</X><Y>3.5</Y><Z>100</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">512</token>
+<string name="Name">Door</string>
+<Vector3 name="size"><X>0.5</X><Y>7</Y><Z>4</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX54">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4290045695</Color3uint8>
+<CoordinateFrame name="CFrame"><X>19.8</X><Y>9</Y><Z>95</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">Window</string>
+<Vector3 name="size"><X>0.4</X><Y>3</Y><Z>3</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX55">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4290045695</Color3uint8>
+<CoordinateFrame name="CFrame"><X>19.8</X><Y>9</Y><Z>105</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">256</token>
+<string name="Name">Window</string>
+<Vector3 name="size"><X>0.4</X><Y>3</Y><Z>3</Z></Vector3>
+
+</Properties>
+
+</Item><Item class="Part" referent="RBX56">
+<Properties>
+<bool name="Anchored">true</bool>
+<bool name="CanCollide">true</bool>
+<Color3uint8 name="Color3uint8">4290690740</Color3uint8>
+<CoordinateFrame name="CFrame"><X>16</X><Y>0.52</Y><Z>100</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame>
+<token name="Material">816</token>
+<string name="Name">Path</string>
+<Vector3 name="size"><X>8</X><Y>0.1</Y><Z>3</Z></Vector3>
+
+</Properties>
+
+</Item>
+</Item>
+</Item>
+</Item>
+<Item class="ReplicatedStorage" referent="RBX61">
+<Properties><string name="Name">ReplicatedStorage</string></Properties>
+<Item class="ModuleScript" referent="RBX62">
+<Properties>
+<string name="Name">Config</string>
+<ProtectedString name="Source"><![CDATA[--[[
+	Config (ModuleScript)
+	Where it goes: ReplicatedStorage > Config
+
+	These are the numbers that tune the game. Change one, press Play, see what happens.
+	Everything else in the game reads from here, so this is the only place you edit numbers.
+]]
+
+local Config = {}
+
+-- Finish the whole day in this many seconds for 3 stars.
+Config.PAR_SECONDS = 90
+
+-- Finish under PAR_SECONDS times this for 2 stars. 1.5 means 135 seconds when par is 90.
+Config.TWO_STAR_MULTIPLIER = 1.5
+
+-- Cash earned for every letter delivered.
+Config.CASH_PER_LETTER = 10
+
+-- Extra cash at clock-out, by star count.
+Config.CASH_BONUS = {
+	[3] = 50,
+	[2] = 20,
+	[1] = 0,
+}
+
+-- How far away (in studs) you can be from a mailbox and still deliver.
+Config.DELIVER_DISTANCE = 10
+
+-- How long you hold E at a mailbox before the letter goes in, in seconds.
+Config.DELIVER_HOLD_SECONDS = 0.3
+
+return Config
+]]></ProtectedString>
+</Properties>
+</Item>
+</Item>
+<Item class="ServerScriptService" referent="RBX63">
+<Properties><string name="Name">ServerScriptService</string></Properties>
+<Item class="Script" referent="RBX64">
+<Properties>
+<string name="Name">MailRushServer</string>
+<ProtectedString name="Source"><![CDATA[--[[
+	MailRushServer (Script)
+	Where it goes: ServerScriptService > MailRushServer
+
+	This is the referee. It runs on the Roblox server, not on the player's computer,
+	so players cannot cheat it. It decides when a day starts, counts letters,
+	works out the stars, and hands out cash.
+
+	It expects these things in the Workspace:
+	  - A Folder called "Mailboxes" holding your mailboxes (Parts or Models).
+	  - A Model called "PostOffice" that contains a Part called "ClockInDesk".
+]]
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+
+local Config = require(ReplicatedStorage:WaitForChild("Config"))
+
+------------------------------------------------------------
+-- Remotes: how the server talks to each player's screen
+------------------------------------------------------------
+
+local remotes = ReplicatedStorage:FindFirstChild("Remotes")
+if not remotes then
+	remotes = Instance.new("Folder")
+	remotes.Name = "Remotes"
+	remotes.Parent = ReplicatedStorage
+end
+
+local function getRemote(name)
+	local remote = remotes:FindFirstChild(name)
+	if not remote then
+		remote = Instance.new("RemoteEvent")
+		remote.Name = name
+		remote.Parent = remotes
+	end
+	return remote
+end
+
+local DayStarted = getRemote("DayStarted")       -- server -> player: your day began
+local LetterDelivered = getRemote("LetterDelivered") -- server -> player: one letter landed (or a hint)
+local DayFinished = getRemote("DayFinished")     -- server -> player: here are your stars
+
+------------------------------------------------------------
+-- Find the world pieces
+------------------------------------------------------------
+
+local mailboxFolder = Workspace:WaitForChild("Mailboxes")
+local postOffice = Workspace:WaitForChild("PostOffice")
+local clockDesk = postOffice:WaitForChild("ClockInDesk")
+
+-- A mailbox can be a single Part or a Model full of parts.
+-- This returns the Part we attach the "Deliver" prompt to.
+local function getPromptPart(mailbox)
+	if mailbox:IsA("BasePart") then
+		return mailbox
+	end
+	if mailbox:IsA("Model") then
+		return mailbox.PrimaryPart or mailbox:FindFirstChildWhichIsA("BasePart", true)
+	end
+	return nil
+end
+
+local function getMailboxes()
+	local list = {}
+	for _, child in ipairs(mailboxFolder:GetChildren()) do
+		if getPromptPart(child) then
+			table.insert(list, child)
+		end
+	end
+	return list
+end
+
+-- Puts a "hold E" prompt on a part, or reuses one that is already there.
+local function addPrompt(part, actionText, objectText, holdSeconds)
+	local prompt = part:FindFirstChildOfClass("ProximityPrompt")
+	if not prompt then
+		prompt = Instance.new("ProximityPrompt")
+		prompt.Parent = part
+	end
+	prompt.ActionText = actionText
+	prompt.ObjectText = objectText
+	prompt.HoldDuration = holdSeconds
+	prompt.MaxActivationDistance = Config.DELIVER_DISTANCE
+	prompt.RequiresLineOfSight = false
+	return prompt
+end
+
+------------------------------------------------------------
+-- Player stats shown on the leaderboard (top right in game)
+------------------------------------------------------------
+
+Players.PlayerAdded:Connect(function(player)
+	local stats = Instance.new("Folder")
+	stats.Name = "leaderstats"
+	stats.Parent = player
+
+	local cash = Instance.new("IntValue")
+	cash.Name = "Cash"
+	cash.Parent = stats
+
+	local stars = Instance.new("IntValue")
+	stars.Name = "Stars"
+	stars.Parent = stats
+end)
+
+------------------------------------------------------------
+-- Each player's current day
+------------------------------------------------------------
+
+-- days[player] = { startTime = number, delivered = { [mailbox] = true }, count = number, total = number }
+local days = {}
+
+Players.PlayerRemoving:Connect(function(player)
+	days[player] = nil
+end)
+
+local function starsFor(seconds)
+	if seconds <= Config.PAR_SECONDS then
+		return 3
+	elseif seconds <= Config.PAR_SECONDS * Config.TWO_STAR_MULTIPLIER then
+		return 2
+	else
+		return 1
+	end
+end
+
+local function addCash(player, amount)
+	local stats = player:FindFirstChild("leaderstats")
+	if stats and stats:FindFirstChild("Cash") then
+		stats.Cash.Value = stats.Cash.Value + amount
+	end
+end
+
+local function addStars(player, amount)
+	local stats = player:FindFirstChild("leaderstats")
+	if stats and stats:FindFirstChild("Stars") then
+		stats.Stars.Value = stats.Stars.Value + amount
+	end
+end
+
+local function startDay(player)
+	local total = #getMailboxes()
+	days[player] = {
+		startTime = os.clock(),
+		delivered = {},
+		count = 0,
+		total = total,
+	}
+	DayStarted:FireClient(player, {
+		total = total,
+		parSeconds = Config.PAR_SECONDS,
+	})
+	print(player.Name .. " clocked in. Letters to deliver: " .. total)
+end
+
+local function finishDay(player)
+	local day = days[player]
+	if not day then
+		return
+	end
+
+	local seconds = os.clock() - day.startTime
+	local stars = starsFor(seconds)
+	local bonus = Config.CASH_BONUS[stars] or 0
+
+	addCash(player, bonus)
+	addStars(player, stars)
+	days[player] = nil
+
+	DayFinished:FireClient(player, {
+		seconds = seconds,
+		stars = stars,
+		parSeconds = Config.PAR_SECONDS,
+		bonus = bonus,
+	})
+	print(string.format("%s clocked out in %.1f seconds for %d stars", player.Name, seconds, stars))
+end
+
+------------------------------------------------------------
+-- The Post Office desk: clock in, and later clock out
+------------------------------------------------------------
+
+local deskPrompt = addPrompt(clockDesk, "Clock in / out", "Post Office", 0.5)
+
+deskPrompt.Triggered:Connect(function(player)
+	local day = days[player]
+	if not day then
+		startDay(player)
+	elseif day.count >= day.total then
+		finishDay(player)
+	else
+		-- Still letters in the bag. Nudge the player instead of ending the day.
+		LetterDelivered:FireClient(player, {
+			count = day.count,
+			total = day.total,
+			message = "You still have " .. (day.total - day.count) .. " letters in your bag!",
+		})
+	end
+end)
+
+------------------------------------------------------------
+-- The mailboxes
+------------------------------------------------------------
+
+for _, mailbox in ipairs(getMailboxes()) do
+	local part = getPromptPart(mailbox)
+	local prompt = addPrompt(part, "Deliver letter", mailbox.Name, Config.DELIVER_HOLD_SECONDS)
+
+	prompt.Triggered:Connect(function(player)
+		local day = days[player]
+		if not day then
+			-- Not clocked in yet, so this mailbox does nothing.
+			LetterDelivered:FireClient(player, {
+				count = 0,
+				total = 0,
+				message = "Clock in at the Post Office first!",
+			})
+			return
+		end
+		if day.delivered[mailbox] then
+			-- Already delivered here today. Ignore the second press.
+			return
+		end
+
+		day.delivered[mailbox] = true
+		day.count = day.count + 1
+		addCash(player, Config.CASH_PER_LETTER)
+
+		LetterDelivered:FireClient(player, {
+			mailbox = mailbox,
+			count = day.count,
+			total = day.total,
+			cash = Config.CASH_PER_LETTER,
+		})
+	end)
+end
+
+print("Mail Rush server ready. Mailboxes found: " .. #getMailboxes())
+]]></ProtectedString>
+</Properties>
+</Item>
+</Item>
+<Item class="StarterPlayer" referent="RBX65">
+<Properties><string name="Name">StarterPlayer</string></Properties>
+<Item class="StarterPlayerScripts" referent="RBX66">
+<Properties><string name="Name">StarterPlayerScripts</string></Properties>
+<Item class="LocalScript" referent="RBX67">
+<Properties>
+<string name="Name">MailRushClient</string>
+<ProtectedString name="Source"><![CDATA[--[[
+	MailRushClient (LocalScript)
+	Where it goes: StarterPlayer > StarterPlayerScripts > MailRushClient
+
+	This runs on each player's own computer and draws everything they see:
+	the timer at the top, the letters count, the hints, the "+10" pop over a mailbox,
+	and the stars screen at the end of the day.
+
+	It builds the whole GUI in code so you do not have to click through
+	dozens of properties in Studio. Change colors and sizes here.
+]]
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local remotes = ReplicatedStorage:WaitForChild("Remotes")
+local DayStarted = remotes:WaitForChild("DayStarted")
+local LetterDelivered = remotes:WaitForChild("LetterDelivered")
+local DayFinished = remotes:WaitForChild("DayFinished")
+
+------------------------------------------------------------
+-- Colors and fonts. Change these to restyle the whole game.
+------------------------------------------------------------
+
+local COLORS = {
+	panel = Color3.fromRGB(30, 41, 59),
+	panelLight = Color3.fromRGB(51, 65, 85),
+	text = Color3.fromRGB(255, 255, 255),
+	textQuiet = Color3.fromRGB(203, 213, 225),
+	starOn = Color3.fromRGB(250, 204, 21),
+	starOff = Color3.fromRGB(100, 116, 139),
+	cash = Color3.fromRGB(74, 222, 128),
+	button = Color3.fromRGB(59, 130, 246),
+}
+local FONT = Enum.Font.GothamBold
+
+------------------------------------------------------------
+-- Little helpers so building the GUI stays short
+------------------------------------------------------------
+
+local function makeFrame(parent, size, position, color)
+	local frame = Instance.new("Frame")
+	frame.Size = size
+	frame.Position = position
+	frame.AnchorPoint = Vector2.new(0.5, 0)
+	frame.BackgroundColor3 = color
+	frame.BorderSizePixel = 0
+	frame.Parent = parent
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 12)
+	corner.Parent = frame
+	return frame
+end
+
+local function makeLabel(parent, size, position, text, textSize, color)
+	local label = Instance.new("TextLabel")
+	label.Size = size
+	label.Position = position
+	label.BackgroundTransparency = 1
+	label.Text = text
+	label.TextSize = textSize
+	label.Font = FONT
+	label.TextColor3 = color or COLORS.text
+	label.TextWrapped = true
+	label.Parent = parent
+	return label
+end
+
+local function formatTime(seconds)
+	local minutes = math.floor(seconds / 60)
+	local secs = seconds - minutes * 60
+	return string.format("%d:%04.1f", minutes, secs)
+end
+
+------------------------------------------------------------
+-- Build the screen
+------------------------------------------------------------
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "MailRushGui"
+gui.ResetOnSpawn = false
+gui.Parent = playerGui
+
+-- The HUD at the top: timer, letters, and a hint line.
+local hud = makeFrame(gui, UDim2.new(0, 360, 0, 96), UDim2.new(0.5, 0, 0, 12), COLORS.panel)
+hud.BackgroundTransparency = 0.15
+
+local timerLabel = makeLabel(hud, UDim2.new(0.5, 0, 0, 40), UDim2.new(0, 0, 0, 6), "0:00.0", 32)
+local lettersLabel = makeLabel(hud, UDim2.new(0.5, 0, 0, 40), UDim2.new(0.5, 0, 0, 6), "Letters: -", 22)
+local hintLabel = makeLabel(hud, UDim2.new(1, -16, 0, 40), UDim2.new(0, 8, 0, 48), "Walk to the Post Office desk and hold E to clock in.", 16, COLORS.textQuiet)
+
+-- The results card in the middle of the screen. Hidden until a day ends.
+local results = makeFrame(gui, UDim2.new(0, 380, 0, 300), UDim2.new(0.5, 0, 0.5, -150), COLORS.panel)
+results.Visible = false
+
+makeLabel(results, UDim2.new(1, 0, 0, 44), UDim2.new(0, 0, 0, 12), "Day complete!", 30)
+
+local starLabels = {}
+for i = 1, 3 do
+	local star = makeLabel(results, UDim2.new(0, 70, 0, 70), UDim2.new(0.5, (i - 2) * 80 - 35, 0, 60), "★", 60, COLORS.starOff)
+	starLabels[i] = star
+end
+
+local resultTime = makeLabel(results, UDim2.new(1, 0, 0, 30), UDim2.new(0, 0, 0, 140), "", 22)
+local resultPar = makeLabel(results, UDim2.new(1, 0, 0, 26), UDim2.new(0, 0, 0, 170), "", 16, COLORS.textQuiet)
+local resultBonus = makeLabel(results, UDim2.new(1, 0, 0, 26), UDim2.new(0, 0, 0, 196), "", 18, COLORS.cash)
+
+local playAgain = Instance.new("TextButton")
+playAgain.Size = UDim2.new(0, 200, 0, 44)
+playAgain.Position = UDim2.new(0.5, -100, 1, -60)
+playAgain.BackgroundColor3 = COLORS.button
+playAgain.Text = "Back to work"
+playAgain.TextSize = 20
+playAgain.Font = FONT
+playAgain.TextColor3 = COLORS.text
+playAgain.Parent = results
+local buttonCorner = Instance.new("UICorner")
+buttonCorner.CornerRadius = UDim.new(0, 10)
+buttonCorner.Parent = playAgain
+
+------------------------------------------------------------
+-- Prompts: hide a mailbox's prompt for me once I have delivered there
+------------------------------------------------------------
+
+local function setPromptEnabled(mailbox, enabled)
+	for _, descendant in ipairs(mailbox:GetDescendants()) do
+		if descendant:IsA("ProximityPrompt") then
+			descendant.Enabled = enabled
+		end
+	end
+end
+
+local function resetAllPrompts()
+	local folder = workspace:FindFirstChild("Mailboxes")
+	if folder then
+		for _, mailbox in ipairs(folder:GetChildren()) do
+			setPromptEnabled(mailbox, true)
+		end
+	end
+end
+
+-- A floating "+10" that rises out of the mailbox and fades away.
+local function popCash(mailbox, amount)
+	local part = mailbox:IsA("BasePart") and mailbox or mailbox:FindFirstChildWhichIsA("BasePart", true)
+	if not part then
+		return
+	end
+
+	local billboard = Instance.new("BillboardGui")
+	billboard.Size = UDim2.new(0, 120, 0, 50)
+	billboard.StudsOffset = Vector3.new(0, 3, 0)
+	billboard.AlwaysOnTop = true
+	billboard.Parent = part
+
+	local label = makeLabel(billboard, UDim2.new(1, 0, 1, 0), UDim2.new(0, 0, 0, 0), "+" .. amount, 36, COLORS.cash)
+	label.TextStrokeTransparency = 0.5
+
+	local tween = TweenService:Create(billboard, TweenInfo.new(0.9, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+		StudsOffset = Vector3.new(0, 7, 0),
+	})
+	local fade = TweenService:Create(label, TweenInfo.new(0.9), { TextTransparency = 1 })
+	tween:Play()
+	fade:Play()
+	task.delay(1, function()
+		billboard:Destroy()
+	end)
+end
+
+------------------------------------------------------------
+-- Day state
+------------------------------------------------------------
+
+local running = false
+local startTime = 0
+local parSeconds = 0
+
+RunService.RenderStepped:Connect(function()
+	if running then
+		local elapsed = os.clock() - startTime
+		timerLabel.Text = formatTime(elapsed)
+		-- Turn the timer yellow once you pass par so you can feel the pressure.
+		if elapsed > parSeconds then
+			timerLabel.TextColor3 = COLORS.starOn
+		else
+			timerLabel.TextColor3 = COLORS.text
+		end
+	end
+end)
+
+DayStarted.OnClientEvent:Connect(function(info)
+	running = true
+	startTime = os.clock()
+	parSeconds = info.parSeconds
+	results.Visible = false
+	resetAllPrompts()
+	lettersLabel.Text = "Letters: 0 / " .. info.total
+	hintLabel.Text = "Go! Hold E at each mailbox. Par is " .. formatTime(info.parSeconds) .. "."
+end)
+
+LetterDelivered.OnClientEvent:Connect(function(info)
+	if info.message then
+		hintLabel.Text = info.message
+		return
+	end
+
+	lettersLabel.Text = "Letters: " .. info.count .. " / " .. info.total
+
+	if info.mailbox then
+		setPromptEnabled(info.mailbox, false)
+		popCash(info.mailbox, info.cash or 0)
+	end
+
+	if info.count >= info.total then
+		hintLabel.Text = "All delivered! Run back to the Post Office and clock out."
+	else
+		hintLabel.Text = (info.total - info.count) .. " to go!"
+	end
+end)
+
+DayFinished.OnClientEvent:Connect(function(info)
+	running = false
+	timerLabel.Text = formatTime(info.seconds)
+	timerLabel.TextColor3 = COLORS.text
+
+	for i = 1, 3 do
+		if i <= info.stars then
+			starLabels[i].TextColor3 = COLORS.starOn
+		else
+			starLabels[i].TextColor3 = COLORS.starOff
+		end
+	end
+
+	resultTime.Text = "Your time: " .. formatTime(info.seconds)
+	resultPar.Text = "Par: " .. formatTime(info.parSeconds) .. "   2 stars under " .. formatTime(info.parSeconds * 1.5)
+	if info.bonus > 0 then
+		resultBonus.Text = "Bonus: +" .. info.bonus .. " cash"
+	else
+		resultBonus.Text = "No bonus. Beat par for extra cash!"
+	end
+
+	results.Visible = true
+	hintLabel.Text = "Clock in again at the desk for a new day."
+	resetAllPrompts()
+end)
+
+playAgain.MouseButton1Click:Connect(function()
+	results.Visible = false
+end)
+]]></ProtectedString>
+</Properties>
+</Item>
+</Item>
+</Item>
+</roblox>
